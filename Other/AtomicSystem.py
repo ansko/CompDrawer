@@ -17,10 +17,25 @@ class AtomicSystem:
                  fname='DataExamples/10x20.data',
                  atomicType='full',
                  potential=None,
-                 atoms=[AtomLAMMPSRealFull(), ]):
-        if not method:
+                 atoms=[AtomLAMMPSRealFull(), ],
+                 bonds=[],
+                 angles=[],
+                 dihedrals=[],
+                 impropers=[]):
+        if not method or method == 'manual':
+            if not method:
+                print('AtomicSystem.__init__()',
+                      'method of system creation is not specified',
+                      'using default values')
+            else:
+                print('AtomicSystem.__init__()',
+                      'method of system creation is "manual"')
             self.__potential = potential
             self.__atoms = atoms
+            self.__bonds = bonds
+            self.__angles = angles
+            self.__dihedrals = dihedrals
+            self.__impropers = impropers
         elif method == "from file":
             if fname is None:
                 print("ERROR: atomic system should be read from file, but",
@@ -36,6 +51,10 @@ class AtomicSystem:
         parser = ParserLAMMPSData(fname, atomicType)
         self.__potential = parser.parsedPotential()
         self.__atoms = parser.parsedAtoms()
+        self.__bonds = parser.parsedBonds()
+        self.__angles = parser.parsedAngles()
+        self.__dihedrals = parser.parsedDihedrals()
+        self.__impropers = parser.parsedImpropers()
         """
             Draft implementation, end. [2018-01-22/16:58]
         """
@@ -46,3 +65,15 @@ class AtomicSystem:
 
     def atoms(self):
         return self.__atoms
+
+    def bonds(self):
+        return self.__bonds
+
+    def angles(self):
+        return self.__angles
+
+    def dihedrals(self):
+        return self.__dihedrals
+
+    def impropers(self):
+        return self.__impropers

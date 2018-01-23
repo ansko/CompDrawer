@@ -33,6 +33,12 @@ def main():
     """
     app = QApplication(sys.argv)
     w = MainWidget()
+#    w.setFname(fname="DataExamples/10x20.data")
+    w.setFname(fname="DataExamples/MT2EtOH_cvff.data")
+#    w.setFname(fname="DataExamples/PA6_monomer.data")
+
+    
+
     w.show()
     sys.exit(app.exec_())
 

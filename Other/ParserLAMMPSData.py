@@ -17,16 +17,16 @@ class ParserLAMMPSData:
     """
         Parses LAMMPS's ".data" file.
     """
-    def __init__(self, fname='DataExamples/10x20.data', atomicType='full'):
-        self.__avaliableAtomicTypes = ['full', ]
-        if atomicType not in self.__avaliableAtomicTypes:
+    def __init__(self, fname, atomicStyle):
+        self.__avaliableAtomicStyles = ['full', ]
+        if atomicStyle not in self.__avaliableAtomicStyles:
             print('ERROR:',
-                  'ParserLAMMPSData: this atomic type is not avaliable now!',
+                  'ParserLAMMPSData: this atomic style is not avaliable now!',
                   'Yor style is', atomicType,
-                  'while avaliable styles are', self.__avaliableAtomicTypes)
+                  'while avaliable styles are', self.__avaliableAtomicStyles)
             sys.exit()
         self.__fname = fname
-        if atomicType == 'full':
+        if atomicStyle == 'full':
             self.__readDataFull()
 
     def __readDataFull(self):
@@ -231,6 +231,9 @@ class ParserLAMMPSData:
                                                  bondType=bondType,
                                                  atomOne=atomOne,
                                                  atomTwo=atomTwo)
+                    bonds[bondNumber - 1].setBoxRanges([xlo, xhi,
+                                                        ylo, yhi,
+                                                        zlo, zhi])
                 elif flagAnglesBegan and not flagDihedralsBegan:
                     ls = line.split()
                     if len(ls) < 5:
@@ -308,9 +311,13 @@ class ParserLAMMPSData:
         self.__angleCoeffs = angleCoeffs
         self.__dihedralCoeffs = dihedralCoeffs
         self.__improperCoeffs = improperCoeffs
+        print('ParserLAMMPSData finished reading')
 
     def fname(self):
         return self.__fname
+
+    def parsedRanges(self):
+        return self.__parsedRanges
 
     def parsedPotential(self):
         return self.__parsedPotential
