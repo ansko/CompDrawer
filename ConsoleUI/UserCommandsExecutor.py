@@ -4,7 +4,8 @@
 
 # my imports
 from AtomicSystem.PhysicalAtomicSystem import PhysicalAtomicSystem
-from Other.ParserLAMMPSData import ParserLAMMPSData
+from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
+from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
 
 
 class UserCommandsExecutor:
@@ -23,23 +24,27 @@ class UserCommandsExecutor:
         sys.exit()
 
     def loadFromFile(self, fname):
-        print('UserCommandExecutor, loading system from file', fname)
-        pld = ParserLAMMPSData(fname=fname, atomicStyle='full')
+        #print('UserCommandExecutor, loading system from file', fname)
+        rld = ReaderLAMMPSData(fname=fname, atomicStyle='full')
         physicalAtomicSystem = PhysicalAtomicSystem(method='manual',
-                                            atoms=pld.parsedAtoms(),
-                                            bonds=pld.parsedBonds(),
-                                            angles=pld.parsedAngles(),
-                                            dihedrals=pld.parsedDihedrals(),
-                                            impropers=pld.parsedImpropers(),
-                                            ranges=pld.parsedRanges())
+                                            atoms=rld.parsedAtoms(),
+                                            bonds=rld.parsedBonds(),
+                                            angles=rld.parsedAngles(),
+                                            dihedrals=rld.parsedDihedrals(),
+                                            impropers=rld.parsedImpropers(),
+                                            ranges=rld.parsedRanges())
         self.__aw.setPhysicalAtomicSystem(
                                          physicalAtomicSystem=physicalAtomicSystem)
 
 ##### methods to manipulate with a displayed picture
     # (not the physical system!)
     def setProjection(self, projection):
-        print('UserCommandExecutor, setting the projection', projection)
+        #print('UserCommandExecutor, setting the projection', projection)
         self.__aw.setProjection(projection)
+
+    def setDrawingStyle(self, drawingStyleName):
+        drawingStyle = DrawingStyle(drawingStyleName)
+        self.__aw.setDrawingStyle(drawingStyle)
 
 ##### methods to manipulate with the physical system
     def moveAtomsAlongX(self, offsetAlongX):

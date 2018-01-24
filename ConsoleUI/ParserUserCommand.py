@@ -3,7 +3,7 @@
 
 
 # my imports
-from Other.UserCommandsExecutor import UserCommandsExecutor
+from ConsoleUI.UserCommandsExecutor import UserCommandsExecutor
 
 
 class ParserUserCommand:
@@ -23,6 +23,7 @@ class ParserUserCommand:
         commandName = command[0]
         if commandName == 'pass':
             return
+    ##### General commands
         elif commandName == 'loadSystemFromFile':
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),'
@@ -32,6 +33,12 @@ class ParserUserCommand:
             fname = command[1]
             self.__functionCalls.append(self.__uce.loadFromFile)
             self.__functionArgs.append([fname,])
+
+        elif commandName in ['quite', 'exit']:
+            self.__functionCalls.append(self.__uce.exit)
+            self.__functionArgs.append(['normal termination',])
+            sys.exit()
+    ##### Commands to manipulate by the system geometry
         elif commandName == 'moveAtomsAlongX':
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),',
@@ -56,6 +63,7 @@ class ParserUserCommand:
             offsetAlongZ = float(command[1])
             self.__functionCalls.append(self.__uce.moveAtomsAlongZ)
             self.__functionArgs.append([offsetAlongZ,])
+   ##### Commands to manipulate by the picture
         elif commandName == 'setProjection':
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),'
@@ -65,10 +73,15 @@ class ParserUserCommand:
             projection = command[1]
             self.__functionCalls.append(self.__uce.setProjection)
             self.__functionArgs.append([projection,])
-        elif commandName in ['quite', 'exit']:
-            self.__functionCalls.append(self.__uce.exit)
-            self.__functionArgs.append(['normal termination',])
-            sys.exit()
+        elif commandName == 'setDrawingStyle':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),'
+                      'command is setDrawingStyle,'
+                      'but the style is not defined')
+                return
+            drawingStyle = command[1]
+            self.__functionCalls.append(self.__uce.setDrawingStyle)
+            self.__functionArgs.append([drawingStyle,])
         else:
             print('ERROR: ParserUserCommand.parseCommand(),'
                   'unknown command')

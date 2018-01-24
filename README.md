@@ -1,10 +1,18 @@
 # CompDrawer
 Tool to create composite MMT-PA6
 
-List of avaliable commands:
+List of avaliable general commands:
+
+    loadSystemFromFile fname
+
+
+List of avaliable commands to change physical properties:
 
     moveAtomsAlongX offsetX
     moveAtomsAlongY offsetY
     moveAtomsAlongZ offsetZ
-    loadSystemFromFile fname
+
+
+List of avaliable commands to change the picture:
+
     setProjection ['XY' | 'XZ' | 'YZ']

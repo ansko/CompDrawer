@@ -70,9 +70,9 @@ class WriterLAMMPSData:
         comment = ('LAMMPS data file. ' +
                    'CompDrawer / ' +
                    str(now.day) + ' ' + str(now.month) + ' ' + str(now.year) + ' /'
-                   ' CGCMM for UNKNOWN FNAME') # This is not important for me now,
-                                               # but it should be done in a proper
-                                               # way later!
+                   ' UNDEFINED_STRING') # This is not important for me now,
+                                        # but it should be done in a proper
+                                        # way later!
       ### Start string
         f.write(comment)
         f.write('\n\n')

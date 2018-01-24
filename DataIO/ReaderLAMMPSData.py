@@ -13,7 +13,7 @@ from Structure.Dihedral import Dihedral
 from Structure.Improper import Improper
 
 
-class ParserLAMMPSData:
+class ReaderLAMMPSData:
     """
         Parses LAMMPS's ".data" file.
     """
