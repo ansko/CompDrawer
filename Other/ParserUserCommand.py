@@ -38,7 +38,7 @@ class ParserUserCommand:
                       'command is moveAtomsAlongX, but the offset is not defined')
                 return
             offsetAlongX = float(command[1])
-            self.__functionCalls.append(self.__uce.moveAlongX)
+            self.__functionCalls.append(self.__uce.moveAtomsAlongX)
             self.__functionArgs.append([offsetAlongX,])
         elif commandName == 'moveAtomsAlongY':
             if len(command) < 2:
@@ -46,7 +46,7 @@ class ParserUserCommand:
                       'command is moveAtomsAlongY, but the offset is not defined')
                 return
             offsetAlongY = float(command[1])
-            self.__functionCalls.append(self.__uce.moveAlongY)
+            self.__functionCalls.append(self.__uce.moveAtomsAlongY)
             self.__functionArgs.append([offsetAlongY,])
         elif commandName == 'moveAtomsAlongZ':
             if len(command) < 2:
@@ -54,7 +54,7 @@ class ParserUserCommand:
                       'command is moveAtomsAlongZ, but the offset is not defined')
                 return
             offsetAlongZ = float(command[1])
-            self.__functionCalls.append(self.__uce.moveAlongZ)
+            self.__functionCalls.append(self.__uce.moveAtomsAlongZ)
             self.__functionArgs.append([offsetAlongZ,])
         elif commandName == 'setProjection':
             if len(command) < 2:
@@ -65,6 +65,10 @@ class ParserUserCommand:
             projection = command[1]
             self.__functionCalls.append(self.__uce.setProjection)
             self.__functionArgs.append([projection,])
+        elif commandName in ['quite', 'exit']:
+            self.__functionCalls.append(self.__uce.exit)
+            self.__functionArgs.append(['normal termination',])
+            sys.exit()
         else:
             print('ERROR: ParserUserCommand.parseCommand(),'
                   'unknown command')

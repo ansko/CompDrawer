@@ -23,14 +23,14 @@ class Improper:
     def improperType(self):
         return self.__improperType
 
-    def atomOne(self):
+    def improperAtomOne(self):
         return self.__atomOne
 
-    def atomTwo(self):
+    def improperAtomTwo(self):
         return self.__atomTwo
 
-    def atomThree(self):
+    def improperAtomThree(self):
         return self.__atomThree
 
-    def atomFour(self):
+    def improperAtomFour(self):
         return self.__atomFour

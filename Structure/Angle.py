@@ -21,11 +21,11 @@ class Angle:
     def angleType(self):
         return self.__angleType
 
-    def atomOne(self):
+    def angleAtomOne(self):
         return self.__atomOne
 
-    def atomTwo(self):
+    def angleAtomTwo(self):
         return self.__atomTwo
 
-    def atomThree(self):
+    def angleAtomThree(self):
         return self.__atomThree

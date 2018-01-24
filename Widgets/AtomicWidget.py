@@ -3,6 +3,7 @@
 
 
 # standart modules imports
+import copy
 import sys
 
 # pyqt imports
@@ -11,7 +12,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 # my imports
-from Other.AtomicSystem import AtomicSystem
+from AtomicSystem.PhysicalAtomicSystem import PhysicalAtomicSystem
 
 
 # constants, I should avoid them
@@ -33,13 +34,12 @@ class AtomicWidget(QLabel):
         self.__paintingOffsetX = 0
         self.__paintingOffsetY = 0
         self.__paintingOffsetZ = 0
-        self.__guestAtomicSystems = []
         self.__scale = 1
         self.__atomicSystem = None
         self.__projection = 'XY'
 
-    def setAtomicSystem(self, atomicSystem):
-        self.__atomicSystem = atomicSystem
+    def setPhysicalAtomicSystem(self, physicalAtomicSystem):
+        self.__physicalAtomicSystem = physicalAtomicSystem
         self.__initUI()
 
     def setProjection(self, projection):
@@ -50,20 +50,20 @@ class AtomicWidget(QLabel):
     def setDrawingStyle(self, drawingStyle):
         self.__drawingStyle = drawingStyle
 
-    def atomicSystem(self):
-        return self.__atomicSystem
+    def physicalAtomicSystem(self):
+        return self.__physicalAtomicSystem
 
     def drawingStyle(self):
         return self.__drawingStyle
 
     def __initUI(self):
-        xmin = self.__atomicSystem.atoms()[0].atomX()
-        xmax = self.__atomicSystem.atoms()[0].atomX()
-        ymin = self.__atomicSystem.atoms()[0].atomY()
-        ymax = self.__atomicSystem.atoms()[0].atomY()
-        zmin = self.__atomicSystem.atoms()[0].atomZ()
-        zmax = self.__atomicSystem.atoms()[0].atomZ()
-        for atom in self.__atomicSystem.atoms():
+        xmin = self.__physicalAtomicSystem.atoms()[0].atomX()
+        xmax = self.__physicalAtomicSystem.atoms()[0].atomX()
+        ymin = self.__physicalAtomicSystem.atoms()[0].atomY()
+        ymax = self.__physicalAtomicSystem.atoms()[0].atomY()
+        zmin = self.__physicalAtomicSystem.atoms()[0].atomZ()
+        zmax = self.__physicalAtomicSystem.atoms()[0].atomZ()
+        for atom in self.__physicalAtomicSystem.atoms():
             x = atom.atomX()
             y = atom.atomY()
             z = atom.atomZ()
@@ -110,11 +110,11 @@ class AtomicWidget(QLabel):
         p.drawText(230, -10, self.__projection[0])
         p.drawLine(0, 0, 250, 0)
         p.scale(1, -1)
-        if self.__atomicSystem is None:
+        if self.__physicalAtomicSystem is None:
             return
-        if self.__atomicSystem.atoms() is None:
+        if self.__physicalAtomicSystem.atoms() is None:
             return
-        for atom in self.__atomicSystem.atoms():
+        for atom in self.__physicalAtomicSystem.atoms():
             x = (atom.atomX() + self.__paintingOffsetX) * self.__scale
             y = (atom.atomY() + self.__paintingOffsetY) * self.__scale
             z = (atom.atomZ() + self.__paintingOffsetZ) * self.__scale
@@ -137,7 +137,7 @@ class AtomicWidget(QLabel):
                 print('ERROR:',
                       'AtomicWidget.paintEvent()',
                       'some error in projection')
-        for bond in self.__atomicSystem.bonds():
+        for bond in self.__physicalAtomicSystem.bonds():
             if True in bond.crosses():
                 continue
             x = bond.atomOne().atomX()
@@ -165,19 +165,35 @@ class AtomicWidget(QLabel):
                 print('ERROR:',
                       'AtomicWidget.paintEvent()',
                       'some error in projection')
+        ranges = self.__physicalAtomicSystem.ranges()
+        if ranges is None:
+            p.end()
+            return
+        p.setPen(QPen(Qt.green))
+        p.setBrush(QBrush())
+        xlo = (ranges[0] + self.__paintingOffsetX) * self.__scale
+        xhi = (ranges[1] + self.__paintingOffsetX) * self.__scale
+        ylo = (ranges[2] + self.__paintingOffsetY) * self.__scale
+        yhi = (ranges[3] + self.__paintingOffsetY) * self.__scale
+        zlo = (ranges[4] + self.__paintingOffsetZ) * self.__scale
+        zhi = (ranges[5] + self.__paintingOffsetZ) * self.__scale
+        if self.__projection == 'XY':
+            p.drawRect(xlo, ylo, xhi - xlo, yhi - ylo)
+        elif self.__projection == 'XZ':
+            p.drawRect(xlo, zlo, xhi - xlo, zhi - zlo)
+        elif self.__projection == 'YZ':
+            p.drawRect(ylo, zlo, yhi - ylo, zhi - zlo)
+        else:
+            print('ERROR:',
+                  'AtomicWidget.paintEvent()',
+                  'some error in projection')
         p.end()
     """
         Draft implementation, end. [2018-01-22/16:57]
     """
 
-    def atomicSystem(self):
-        return self.__atomicSystem
-
-    def guestAtomicSystems(self):
-        return self.__guestAtomicSystems
+    def physicalAtomicSystem(self):
+        return self.__physicalAtomicSystem
 
     def drawingStyle(self):
         return self.__drawingStyle
-
-    def addAtomicSystem(self, atomicSystem):
-        self.__guestAtomicSystems.append(atomicSystem)

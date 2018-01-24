@@ -20,10 +20,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 # my imports
-from Other.AtomicSystem import AtomicSystem
-from Potentials.Potential import Potential
-from Structure.Atoms.AtomLAMMPSRealFull import AtomLAMMPSRealFull
-from Widgets.AtomicWidget import AtomicWidget
 from Widgets.MainWidget import MainWidget
 
 
@@ -33,11 +29,13 @@ def main():
     """
     app = QApplication(sys.argv)
     w = MainWidget()
-#    w.setFname(fname="DataExamples/10x20.data")
-    w.setFname(fname="DataExamples/MT2EtOH_cvff.data")
-#    w.setFname(fname="DataExamples/PA6_monomer.data")
 
-    
+    # now there is some commands sequence, that is hardcoded into MainWidget
+    # its purpose is to test some functionality without writing long string
+    # into program's concole
+    # w.setFname(fname="DataExamples/10x20.data")
+    # w.setFname(fname="DataExamples/MT2EtOH_cvff.data")
+    # w.setFname(fname="DataExamples/PA6_monomer.data")
 
     w.show()
     sys.exit(app.exec_())

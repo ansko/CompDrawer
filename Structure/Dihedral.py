@@ -23,14 +23,14 @@ class Dihedral:
     def dihedralType(self):
         return self.__dihedralType
 
-    def atomOne(self):
+    def dihedralAtomOne(self):
         return self.__atomOne
 
-    def atomTwo(self):
+    def dihedralAtomTwo(self):
         return self.__atomTwo
 
-    def atomThree(self):
+    def dihedralAtomThree(self):
         return self.__atomThree
 
-    def atomFour(self):
+    def dihedralAtomFour(self):
         return self.__atomFour

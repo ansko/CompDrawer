@@ -62,11 +62,11 @@ class Bond:
     def bondType(self):
         return self.__bondType
 
-    def atomOne(self):
+    def bondAtomOne(self):
         return self.__atomOne
 
-    def atomTwo(self):
+    def bondAtomTwo(self):
         return self.__atomTwo
 
-    def length(self):
+    def bondLength(self):
         return self.__length

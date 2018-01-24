@@ -10,7 +10,6 @@ from PyQt5.QtCore import *
 # my imports
 from Widgets.AtomicWidget import AtomicWidget
 from Widgets.ConsoleWidget import ConsoleWidget
-from Other.AtomicSystem import AtomicSystem
 from Other.ParserUserCommand import ParserUserCommand
 
 
@@ -55,12 +54,18 @@ class MainWidget(QWidget):
         self.__vbl.addWidget(self.__qle)
         self.setLayout(self.__vbl)
 
-        # temporary code, start [2018-01-23/17:03]
+######### temporary code, start [2018-01-23/17:03]
         self.__qle.setText('loadSystemFromFile DataExamples/PA6_monomer.data')
         self.executeCommand()
         self.__qle.setText('setProjection XZ')
         self.executeCommand()
-        # temporary code, end [2018-01-23/17:03]
+        self.__qle.setText('moveAtomsAlongX 0')
+        self.executeCommand()
+        self.__qle.setText('moveAtomsAlongY 0')
+        self.executeCommand()
+        self.__qle.setText('moveAtomsAlongZ 0')
+        self.executeCommand()
+######### temporary code, end [2018-01-23/17:03]
 
     def executeCommand(self): # maybe, it is bad that this method is not private?
         commandRaw = self.__qle.text()
@@ -71,8 +76,8 @@ class MainWidget(QWidget):
         commands = puc.functionCalls()
         args = puc.functionArgs()
         self.__qle.setText('')
-        print(commands)
         for i, command in enumerate(commands):
             arg = args[i]
+            print('ARG:', arg)
             command(*arg)
         self.update()

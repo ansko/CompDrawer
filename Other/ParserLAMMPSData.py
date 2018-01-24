@@ -22,7 +22,7 @@ class ParserLAMMPSData:
         if atomicStyle not in self.__avaliableAtomicStyles:
             print('ERROR:',
                   'ParserLAMMPSData: this atomic style is not avaliable now!',
-                  'Yor style is', atomicType,
+                  'Yor style is', atomicStyle,
                   'while avaliable styles are', self.__avaliableAtomicStyles)
             sys.exit()
         self.__fname = fname
@@ -92,7 +92,7 @@ class ParserLAMMPSData:
                     dihedralsNumber = int(line.split()[0])
                     dihedrals = [None for i in range(dihedralsNumber)]
                 elif line.endswith(' impropers\n'):
-                    impropersNumer = int(line.split()[0])
+                    impropersNumber = int(line.split()[0])
                     impropers = [None for i in range(impropersNumber)]
                 elif line.endswith('atom types\n'):
                     atomTypesNumber = int(line.split()[0])
@@ -129,9 +129,9 @@ class ParserLAMMPSData:
                 elif line.startswith('Bond Coeffs'):
                      flagBondCoeffsBegan = True
                 elif line.startswith('Angle Coeffs'):
-                     flagAngleCoeffs = True
+                     flagAngleCoeffsBegan = True
                 elif line.startswith('Dihedral Coeffs'):
-                     flagDihedrlaCoeffsBegan = True
+                     flagDihedralCoeffsBegan = True
                 elif line.startswith('Improper Coeffs'):
                      flagImproperCoeffsBegan = True
                 elif line.startswith('Atoms'):
@@ -141,7 +141,7 @@ class ParserLAMMPSData:
                 elif line.startswith('Bonds'):
                      flagBondsBegan = True
                      flagVelocitiesBegan = True # this is not good
-                                                # they really did not degin
+                                                # they really did not begin
                 elif line.startswith('Angles'):
                      flagAnglesBegan = True
                 elif line.startswith('Dihedrals'):
@@ -286,7 +286,7 @@ class ParserLAMMPSData:
                     atomTwo = atoms[atomTwoNumber - 1]
                     atomThree = atoms[atomThreeNumber - 1]
                     atomFour = atoms[atomFourNumber - 1]
-                    dihedrals[dihedralNumber - 1] = Improper(
+                    impropers[improperNumber - 1] = Improper(
                                                      improperNumber=improperNumber,
                                                      improperType=improperType,
                                                      atomOne=atomOne,
@@ -297,20 +297,26 @@ class ParserLAMMPSData:
                     if len(line.split()) == 0:
                         continue
                     print('This string does not seem to contain data:', line)
+        self.__parsedComment = comment
         self.__parsedPotential = potential
         self.__parsedAtoms = atoms
         self.__parsedBonds = bonds
         self.__parsedAngles = angles
         self.__parsedDihedrals = dihedrals
         self.__parsedImpropers = impropers
-        self.__parsedComment = comment
+        self.__parsedAtomTypesNumber = atomTypesNumber
+        self.__parsedBondTypesNumber = bondTypesNumber
+        self.__parsedAngleTypesNumber = angleTypesNumber
+        self.__parsedDihedralTypesNumber = dihedralTypesNumber
+        self.__parsedImproperTypesNumber = improperTypesNumber
         self.__parsedRanges = [xlo, xhi, ylo, yhi, zlo, zhi]
         self.__parsedMasses = masses
         self.__parsedInclines = inclines
-        self.__pairCoeffs = pairCoeffs
-        self.__angleCoeffs = angleCoeffs
-        self.__dihedralCoeffs = dihedralCoeffs
-        self.__improperCoeffs = improperCoeffs
+        self.__parsedPairCoeffs = pairCoeffs
+        self.__parsedBondCoeffs = bondCoeffs
+        self.__parsedAngleCoeffs = angleCoeffs
+        self.__parsedDihedralCoeffs = dihedralCoeffs
+        self.__parsedImproperCoeffs = improperCoeffs
         print('ParserLAMMPSData finished reading')
 
     def fname(self):
@@ -337,23 +343,41 @@ class ParserLAMMPSData:
     def parsedImpropers(self):
         return self.__parsedImpropers
 
+    def parsedAtomTypesNumber(self):
+        return self.__parsedAtomTypesNumber
+
+    def parsedBondTypesNumber(self):
+        return self.__parsedBondTypesNumber
+
+    def parsedAngleTypesNumber(self):
+        return self.__parsedAngleTypesNumber
+
+    def parsedDihedralTypesNumber(self):
+        return self.__parsedDihedralTypesNumber
+
+    def parsedImproperTypesNumber(self):
+        return self.__parsedImproperTypesNumber
+
     def parsedComment(self):
         return self.__parsedComment
 
     def parsedMasses(self):
         return self.__parsedMasses
 
-    def parsefIncline(self):
+    def parsefInclines(self):
         return self.__parsedInclines
 
-    def pairCoeffs(self):
-        return self.__pairCoeffs
+    def parsedPairCoeffs(self):
+        return self.__parsedPairCoeffs
 
-    def angleCoeffs(self):
-        return self.__angleCoeffs
+    def parsedBondCoeffs(self):
+        return self.__parsedBondCoeffs
 
-    def dihedralCoeffs(self):
-        return self.__dihedralCoeffs
+    def parsedAngleCoeffs(self):
+        return self.__parsedAngleCoeffs
 
-    def improperCoeffs(self):
-        return self.__improperCoeffs
+    def parsedDihedralCoeffs(self):
+        return self.__parsedDihedralCoeffs
+
+    def parsedImproperCoeffs(self):
+        return self.__parsedImproperCoeffs
