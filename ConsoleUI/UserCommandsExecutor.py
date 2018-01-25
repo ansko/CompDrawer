@@ -6,7 +6,7 @@
 from AtomicSystem.PhysicalAtomicSystem import PhysicalAtomicSystem
 from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
 from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
-
+from Graphics.DrawingRules.DrawingRule import DrawingRule
 
 class UserCommandsExecutor:
     """
@@ -39,12 +39,24 @@ class UserCommandsExecutor:
 ##### methods to manipulate with a displayed picture
     # (not the physical system!)
     def setProjection(self, projection):
-        #print('UserCommandExecutor, setting the projection', projection)
         self.__aw.setProjection(projection)
 
     def setDrawingStyle(self, drawingStyleName):
         drawingStyle = DrawingStyle(drawingStyleName)
         self.__aw.setDrawingStyle(drawingStyle)
+
+    def setDrawingRule(self, drawingRuleName):
+        drawingRule = DrawingRule(drawingRuleName)
+        self.__aw.setDrawingRule(drawingRule)
+
+    def removeTextStringName(self, stringName):
+        self.__aw.removeTextStringName(stringName)
+
+    def addAtomStringName(self, stringName):
+        self.__aw.addAtomStringName(stringName)
+
+    def addTextStringName(self, stringName):
+        self.__aw.addTextStringName(stringName)
 
 ##### methods to manipulate with the physical system
     def moveAtomsAlongX(self, offsetAlongX):

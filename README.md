@@ -16,3 +16,8 @@ List of avaliable commands to change physical properties:
 List of avaliable commands to change the picture:
 
     setProjection ['XY' | 'XZ' | 'YZ']
+    setDrawingStyle [None | 'custom' | 'default' ...]
+    setDrawingRule [None | 'custom' | 'default' ...]
+    addTextStringName ['scale' | ...]
+    removeTextStringName ['scale' | ]
+    addAtomStringName ['all' | ...]

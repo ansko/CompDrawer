@@ -62,18 +62,10 @@ class MainWidget(QWidget):
         self.__vbl.addWidget(self.__aw)
         self.__vbl.addWidget(self.__qle)
         self.setLayout(self.__vbl)
+
 ######### temporary code, start [2018-01-23/17:03]
-        self.__qle.setText('loadSystemFromFile DataExamples/PA6_monomer.data')
-        self.executeCommand()
-        self.__qle.setText('setProjection XZ')
-        self.executeCommand()
-        self.__qle.setText('moveAtomsAlongX 0')
-        self.executeCommand()
-        self.__qle.setText('moveAtomsAlongY 0')
-        self.executeCommand()
-        self.__qle.setText('moveAtomsAlongZ 0')
-        self.executeCommand()
-        self.__qle.setText('setDrawingStyle simple')
+    def executeTransmittedCommand(self, commandRaw): # will be removed later
+        self.__qle.setText(commandRaw)
         self.executeCommand()
 ######### temporary code, end [2018-01-23/17:03]
 

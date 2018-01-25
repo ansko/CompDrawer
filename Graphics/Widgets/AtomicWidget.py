@@ -29,16 +29,21 @@ class AtomicWidget(QLabel):
     system contains.
     """
     def __init__(self,
-                 drawingStyle=None,
-                 dawingRule=None):
+                 drawingStyleName=None,
+                 drawingRuleName=None):
         super().__init__()
-        self.__drawingStyle = drawingStyle
+        if drawingStyleName is not None:
+            self.__drawingStyle = DrawingStyle(styleName=None)
+        else:
+            self.__drawingStyle = DrawingStyle(styleName='default')
+        self.__drawingRule = DrawingRule(generalRuleName=drawingRuleName)
         self.__paintingOffsetX = 0
         self.__paintingOffsetY = 0
         self.__paintingOffsetZ = 0
         self.__scale = 1
         self.__physicalAtomicSystem = None
         self.__projection = 'XY'
+        self.__stringsDrawn = 0
 
     def setPhysicalAtomicSystem(self, physicalAtomicSystem):
         self.__physicalAtomicSystem = physicalAtomicSystem
@@ -50,12 +55,31 @@ class AtomicWidget(QLabel):
             self.update()
 
     def setDrawingStyle(self, drawingStyle):
+        #print('aw,', drawingStyle.styleName())
         self.__drawingStyle = drawingStyle
-        self.update()
 
     def setDrawingRule(self, drawingRule):
         self.__drawingRule = drawingRule
-        self.update()
+
+    def setAtomDrawingRule(self, atomDrawingRule):
+        self.__drawingRule.setAtomDrawingRule(atomDrawingRule)
+
+    def setBondDrawingRule(self, bondDrawingRule):
+        self.__drawingRule.setBondDrawingRule(bondDrawingRule)
+
+    def setTextDrawingRule(self, textDrawingRule):
+        self.__drawingRule.setTextDrawingRule(textDrawingRule)
+
+    def addAtomStringName(self, stringName):
+        self.__drawingRule.addAtomStringName(stringName)
+
+    def addTextStringName(self, stringName):
+        self.__drawingStyle.addLocation()
+        self.__drawingRule.addStringName(stringName)
+
+    def removeTextStringName(self, stringName):
+        self.__drawingStyle.removeLocation()
+        self.__drawingRule.removeStringName(stringName)
 
     def physicalAtomicSystem(self):
         return self.__physicalAtomicSystem
@@ -110,14 +134,38 @@ class AtomicWidget(QLabel):
         p = QPainter()
         p.begin(self)
       ### drawing text
-        textPen = self.__drawingStyle.textPen()
-        textBrush = self.__drawingStyle.textBrush()
-        textLocations = self.__drawingStyle.textLocations()
-        p.setPen(textPen)
-        p.setBrush(textBrush)
-        p.drawText(textLocations[0], 'scale = ' + str(round(self.__scale, 1)))
-        p.drawText(textLocations[1],
-                   'drawingStyleName = ' + self.__drawingStyle.styleName())
+        if self.__drawingStyle.textLocations() is not None:
+            textPen = self.__drawingStyle.textPen()
+            textBrush = self.__drawingStyle.textBrush()
+            textLocations = self.__drawingStyle.textLocations()
+            p.setPen(textPen)
+            p.setBrush(textBrush)
+            if self.__drawingRule.ifDrawText('scale'):
+                if len(textLocations) < 1 + self.__stringsDrawn:
+                    self.__stringsDrawn += 1
+                    print('aw.pE, too few textLocations')
+                    return
+                p.drawText(textLocations[self.__stringsDrawn], 'scale = ' +
+                                             str(round(self.__scale, 1)))
+                self.__stringsDrawn += 1
+            if self.__drawingRule.ifDrawText('drawingStyleName'):
+                if len(textLocations) < 1 + self.__stringsDrawn:
+                    self.__stringsDrawn += 1
+                    print('aw.pE, too few textLocations')
+                    return
+                p.drawText(textLocations[self.__stringsDrawn], 
+                          'drawingStyleName = ' +
+                          self.__drawingStyle.styleName())
+                self.__stringsDrawn += 1
+            if self.__drawingRule.ifDrawText('drawingRuleName'):
+                if len(textLocations) < 1 + self.__stringsDrawn:
+                    self.__stringsDrawn += 1
+                    print('aw.pE, too few textLocations')
+                    return
+                p.drawText(textLocations[self.__stringsDrawn],
+                           'drawingRuleName = ' +
+                           self.__drawingRule.generalRuleName())
+                self.__stringsDrawn += 1
       ### drawing axis
         p.translate(self.width() / 2, self.height() / 2)
         p.drawLine(0, 0, 0, -250)
@@ -131,11 +179,13 @@ class AtomicWidget(QLabel):
         if self.__physicalAtomicSystem.atoms() is None:
             return
        ## drawing atoms
-        atomPen = self.__drawingStyle.atomPen()
-        atomBrush = self.__drawingStyle.atomBrush()
-        p.setPen(atomPen)
-        p.setBrush(atomBrush)
         for atom in self.__physicalAtomicSystem.atoms():
+            if not self.__drawingRule.ifDrawAtom(atom):
+                continue
+            atomPen = self.__drawingStyle.atomPen(atom)
+            atomBrush = self.__drawingStyle.atomBrush(atom)
+            p.setPen(atomPen)
+            p.setBrush(atomBrush)
             x = (atom.atomX() + self.__paintingOffsetX) * self.__scale
             y = (atom.atomY() + self.__paintingOffsetY) * self.__scale
             z = (atom.atomZ() + self.__paintingOffsetZ) * self.__scale
@@ -217,6 +267,14 @@ class AtomicWidget(QLabel):
                   'AtomicWidget.paintEvent()',
                   'some error in projection')
         p.end()
+        self.__stringsDrawn = 0
+
+    def scale(self):
+        return self.__scale
+
+    def setScale(self, scale):
+        if scale != 0:
+            self.__scale = scale
 
     def physicalAtomicSystem(self):
         return self.__physicalAtomicSystem

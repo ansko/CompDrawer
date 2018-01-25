@@ -4,7 +4,7 @@
 
 # my imports
 from ConsoleUI.UserCommandsExecutor import UserCommandsExecutor
-
+from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
 
 class ParserUserCommand:
     """
@@ -82,9 +82,47 @@ class ParserUserCommand:
             drawingStyle = command[1]
             self.__functionCalls.append(self.__uce.setDrawingStyle)
             self.__functionArgs.append([drawingStyle,])
+        elif commandName == 'setDrawingRule':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),'
+                      'command is setDrawingRule,'
+                      'but the rule is not defined')
+                return
+            drawingRule = command[1]
+            self.__functionCalls.append(self.__uce.setDrawingRule)
+            self.__functionArgs.append([drawingRule,])
+        elif commandName == 'removeTextStringName':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),'
+                      'command is removeTextStringName,'
+                      'but the string name is not defined')
+                return
+            stringName = command[1]
+            self.__functionCalls.append(self.__uce.removeTextStringName)
+            self.__functionArgs.append([stringName,])
+        elif commandName == 'addTextStringName':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),'
+                      'command is addTextStringName,'
+                      'but the string name is not defined')
+                return
+            stringName = command[1]
+            self.__functionCalls.append(self.__uce.addTextStringName)
+            self.__functionArgs.append([stringName,])
+        elif commandName == 'addAtomStringName':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),'
+                      'command is addAtomsStringName,'
+                      'but the string name is not defined')
+                return
+            stringName = command[1]
+            self.__functionCalls.append(self.__uce.addAtomStringName)
+            self.__functionArgs.append([stringName,])
+   ##### No such command
         else:
             print('ERROR: ParserUserCommand.parseCommand(),'
-                  'unknown command')
+                  'unknown command:',
+                   commandName)
             return
         if len(self.__functionCalls) != len(self.__functionArgs):
             print('ParserUserCommand.parseCommand():',

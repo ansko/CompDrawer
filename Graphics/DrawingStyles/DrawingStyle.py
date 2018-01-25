@@ -14,8 +14,10 @@ class DrawingStyle:
                  backgroundColor=None,
                  penColor=None,
                  brushColor=None):
-        if styleName is None:
+        if styleName in [None, 'default']:
             self.__styleName = 'none'
+            self.__atomDrawingStyle = 'default'
+            self.__bondDrawingStyle = 'default'
             self.__atomPen = QPen()
             self.__atomBrush = QBrush()
             self.__bondPen = QPen()
@@ -26,8 +28,10 @@ class DrawingStyle:
             self.__textLocations = [QPointF(0, (i + 1) * 10) for i in range(10)]
             self.__boundariesPen = QPen(Qt.black)
             self.__boundariesBrush = None
-        elif styleName == 'simple':
+        elif styleName == 'simple': # 3 is hardcoded for textLocations
             self.__styleName = 'simple'
+            self.__atomDrawingStyle = 'default'
+            self.__bondDrawingStyle = 'default'
             self.__atomPen = QPen(Qt.blue)
             self.__atomBrush = QBrush(Qt.blue)
             self.__bondPen = QPen(Qt.gray)
@@ -35,29 +39,87 @@ class DrawingStyle:
             self.__bgColor = Qt.white
             self.__textPen = QPen(Qt.black)
             self.__textBrush = None
-            self.__textLocations = [QPointF(0, (i + 1) * 10) for i in range(10)]
+            self.__textLocations = [QPointF(0, (i + 1) * 10) for i in range(3)] 
             self.__boundariesPen = QPen(Qt.black)
             self.__boundariesBrush = None
+        elif styleName == 'custom':
+            self.__styleName = 'custom'
+            self.__atomDrawingStyle = 'default'
+            self.__bondDrawingStyle = 'default'
+            self.__atomPen = Qt.NoPen
+            self.__atomBrush = Qt.NoBrush
+            self.__bondPen = Qt.NoPen
+            self.__bondBrush = Qt.NoBrush
+            self.__bgColor = QColor()
+            self.__textPen = QPen()#Qt.NoPen
+            self.__textBrush = None
+            self.__textLocations = []
+            self.__boundariesPen = Qt.NoPen
+            self.__boundariesBrush = None
 
-    def atomBrush(self):
-        if self.__atomBrush is not None:
+    def addLocation(self):
+        if len(self.__textLocations) == 0:
+            y = 10
+        else:
+            y = self.__textLocations[-1].y() + 10
+        self.__textLocations.append(QPointF(0, y))
+
+    ### tmp
+    def printLocations(self):
+        for location in self.__textLocations:
+            print('DS, ', location.x(), location.y())
+    ### tmp
+
+    def removeLocation(self):
+        if len(self.__textLocations) == 0:
+            return
+        elif len(self.__textLocations) == 1:
+            self.__textLocations = []
+        else:
+            self.__textLocations = self.__textLocations[0:-1]
+
+    def setAtomDrawingStyle(self, atomDrawingStyle):
+        self.__atomDrawingStyle = atomDrawingStyle
+
+    def atomBrush(self, atom):
+        if self.__atomDrawingStyle in ['default']:
+            return QBrush(Qt.black)
+        elif self.__atomDrawingStyle in ['custom']:
+            brush = QBrush(Qt.red)
+            return brush
+        elif self.__atomBrush is not None:
             return self.__atomBrush
         else:
             return Qt.NoBrush
 
-    def atomPen(self):
-        if self.__atomPen is not None:
+    def atomPen(self, atom):
+        if self.__atomDrawingStyle in ['default']:
+            return QPen(Qt.black)
+        elif self.__atomDrawingStyle in ['custom']:
+            pen = QPen(Qt.red)
+            return pen
+        elif self.__atomPen is not None:
             return self.__atomPen
         else:
             return Qt.NoPen
 
     def bondBrush(self):
+        if self.__bondDrawingStyle in ['default']:
+            return QBrush(Qt.black)
+        elif self.__bondDrawingStyle in ['custom']:
+            brush = QBrush(Qt.red)
+            return brush
         if self.__bondBrush is not None:
             return self.__bondBrush
         else:
             return Qt.NoBrush
 
     def bondPen(self):
+        if self.__bondDrawingStyle in ['default']:
+            return QPen(Qt.black)
+        elif self.__bondDrawingStyle in ['custom']:
+            pen = QPen(Qt.red)
+            return pen
         if self.__bondPen is not None:
             return self.__bondPen
         else:

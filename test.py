@@ -20,7 +20,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 # my imports
-from Widgets.MainWidget import MainWidget
+from Graphics.Widgets.MainWidget import MainWidget
 
 
 def main():
@@ -36,6 +36,21 @@ def main():
     # w.setFname(fname="DataExamples/10x20.data")
     # w.setFname(fname="DataExamples/MT2EtOH_cvff.data")
     # w.setFname(fname="DataExamples/PA6_monomer.data")
+
+    ### tmp code, made to simulate input of some commands, start [2018-01-26/11:35]
+    w.executeTransmittedCommand('loadSystemFromFile ' +
+                                'DataExamples/PA6_monomer.data')
+    w.executeTransmittedCommand('setProjection XZ')
+    w.executeTransmittedCommand('moveAtomsAlongX 0')
+    w.executeTransmittedCommand('moveAtomsAlongY 0')
+    w.executeTransmittedCommand('moveAtomsAlongZ 0')
+    w.executeTransmittedCommand('setDrawingStyle custom')
+    w.executeTransmittedCommand('setDrawingRule custom')
+    w.executeTransmittedCommand('addTextStringName scale')
+    w.executeTransmittedCommand('removeTextStringName scale')
+    w.executeTransmittedCommand('addTextStringName drawingStyleName')
+    w.executeTransmittedCommand('addAtomStringName all')
+    ### tmp code, made to simulate input of some commands, end [2018-01-26/11:35]
 
     w.show()
     sys.exit(app.exec_())

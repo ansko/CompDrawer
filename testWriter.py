@@ -21,7 +21,7 @@ def main():
     """
     ifname = 'DataExamples/PA6_monomer.data'
     ofname = 'datafile.data'
-#    ofname = None
+#    ofname = None  # for stdout
     atomicStyle='full'
     pld = ParserLAMMPSData(fname=ifname, atomicStyle=atomicStyle)
     physicalAtomicSystem = PhysicalAtomicSystem(method='manual',

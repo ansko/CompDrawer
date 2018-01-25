@@ -98,6 +98,8 @@ class WriterLAMMPSData:
         # is it possible for LAMMPS datafile indent here to be not equal to 4?..
         for key in ['atom', 'bond', 'angle', 'dihedral', 'improper']:
             keytn = key + 'TypesNumber'
+            if self.__parserAttributes[keytn] == 0:
+                continue
             f.write(' ' * (4 - len(str(self.__parserAttributes[keytn]))))
             f.write(str(self.__parserAttributes[keytn]))
             f.write(' ' + key + ' types\n')
@@ -121,13 +123,15 @@ class WriterLAMMPSData:
       ### Pair Coeffs # lj/cut/coul/long - maybe comment is optional?..
         array = ['Pair', 'Bond', 'Angle', 'Dihedral', 'Improper']
         for i, key in enumerate(array):
+            keylc = key.lower() + 'Coeffs'
+            if self.__parserAttributes[keylc] == 0:
+                continue
             if i == 0:
                 f.write(key + ' Coeffs # lj/cut/coul/long\n\n')
             elif i == len(array) - 1:
                 f.write(key + ' Coeffs # cvff\n\n')
             else:
                 f.write(key + ' Coeffs # harmonic\n\n')
-            keylc = key.lower() + 'Coeffs'
             for coeffNumber, coeff in enumerate(self.__parserAttributes[keylc]):
                 f.write(str(coeffNumber + 1) + ' ')
                 for j in range(len(coeff)):
@@ -139,65 +143,65 @@ class WriterLAMMPSData:
                 f.write('\n')
             f.write('\n')
       ###
-        f.write('Atoms # full\n\n')
-        for atom in atSys.atoms():
-            f.write(str(atom.atomNumber()) + ' ')
-            f.write(str(atom.moleculeNumber()) + ' ')
-            f.write(str(atom.atomType()) + ' ')
-            f.write(str(atom.atomCharge()) + ' ')
-            f.write(str(atom.atomX()) + ' ')
-            f.write(str(atom.atomY()) + ' ')
-            f.write(str(atom.atomZ()) + ' ')
-            f.write(str(atom.atomFlagOne()) + ' ')
-            f.write(str(atom.atomFlagTwo()) + ' ')
-            f.write(str(atom.atomFlagThree()) + ' ')
-            f.write(str(atom.atomComment()))
+        if len(atSys.atoms()) > 0:
+            f.write('Atoms # full\n\n')
+            for atom in atSys.atoms():
+                f.write(str(atom.atomNumber()) + ' ')
+                f.write(str(atom.moleculeNumber()) + ' ')
+                f.write(str(atom.atomType()) + ' ')
+                f.write(str(atom.atomCharge()) + ' ')
+                f.write(str(atom.atomX()) + ' ')
+                f.write(str(atom.atomY()) + ' ')
+                f.write(str(atom.atomZ()) + ' ')
+                f.write(str(atom.atomFlagOne()) + ' ')
+                f.write(str(atom.atomFlagTwo()) + ' ')
+                f.write(str(atom.atomFlagThree()) + ' ')
+                f.write(str(atom.atomComment()))
+                f.write('\n')
             f.write('\n')
-        f.write('\n')
       ###
-        f.write('Bonds\n\n')
-        for bond in atSys.bonds():
-            f.write(str(bond.bondNumber()) + ' ')
-            f.write(str(bond.bondType()) + ' ')
-            f.write(str(bond.bondAtomOne().atomNumber()) + ' ')
-            f.write(str(bond.bondAtomTwo().atomNumber()) + ' ')
+        if len(atSys.bonds()) > 0:
+            f.write('Bonds\n\n')
+            for bond in atSys.bonds():
+                f.write(str(bond.bondNumber()) + ' ')
+                f.write(str(bond.bondType()) + ' ')
+                f.write(str(bond.bondAtomOne().atomNumber()) + ' ')
+                f.write(str(bond.bondAtomTwo().atomNumber()) + ' ')
+                f.write('\n')
             f.write('\n')
-        f.write('\n')
       ###
-        f.write('Angles\n\n')
-        for angle in atSys.angles():
-            f.write(str(angle.angleNumber()) + ' ')
-            f.write(str(angle.angleType()) + ' ')
-            f.write(str(angle.angleAtomOne().atomNumber()) + ' ')
-            f.write(str(angle.angleAtomTwo().atomNumber()) + ' ')
-            f.write(str(angle.angleAtomThree().atomNumber()) + ' ')
+        if len(atSys.angles()) > 0:
+            f.write('Angles\n\n')
+            for angle in atSys.angles():
+                f.write(str(angle.angleNumber()) + ' ')
+                f.write(str(angle.angleType()) + ' ')
+                f.write(str(angle.angleAtomOne().atomNumber()) + ' ')
+                f.write(str(angle.angleAtomTwo().atomNumber()) + ' ')
+                f.write(str(angle.angleAtomThree().atomNumber()) + ' ')
+                f.write('\n')
             f.write('\n')
-        f.write('\n')
       ###
-        f.write('Dihedrals\n\n')
-        for dihedral in atSys.dihedrals():
-            f.write(str(dihedral.dihedralNumber()) + ' ')
-            f.write(str(dihedral.dihedralType()) + ' ')
-            f.write(str(dihedral.dihedralAtomOne().atomNumber()) + ' ')
-            f.write(str(dihedral.dihedralAtomTwo().atomNumber()) + ' ')
-            f.write(str(dihedral.dihedralAtomThree().atomNumber()) + ' ')
-            f.write(str(dihedral.dihedralAtomFour().atomNumber()) + ' ')
+        if len(atSys.dihedrals()) > 0:
+            f.write('Dihedrals\n\n')
+            for dihedral in atSys.dihedrals():
+                f.write(str(dihedral.dihedralNumber()) + ' ')
+                f.write(str(dihedral.dihedralType()) + ' ')
+                f.write(str(dihedral.dihedralAtomOne().atomNumber()) + ' ')
+                f.write(str(dihedral.dihedralAtomTwo().atomNumber()) + ' ')
+                f.write(str(dihedral.dihedralAtomThree().atomNumber()) + ' ')
+                f.write(str(dihedral.dihedralAtomFour().atomNumber()) + ' ')
+                f.write('\n')
             f.write('\n')
-        f.write('\n')
       ###
-        f.write('Impropers\n\n')
-        for improper in atSys.impropers():
-            f.write(str(improper.improperNumber()) + ' ')
-            f.write(str(improper.improperType()) + ' ')
-            f.write(str(improper.improperAtomOne().atomNumber()) + ' ')
-            f.write(str(improper.improperAtomTwo().atomNumber()) + ' ')
-            f.write(str(improper.improperAtomThree().atomNumber()) + ' ')
-            f.write(str(improper.improperAtomFour().atomNumber()) + ' ')
-            f.write('\n')
-#        f.write('\n')
+        if len(atSys.impropers()) > 0:
+            f.write('Impropers\n\n')
+            for improper in atSys.impropers():
+                f.write(str(improper.improperNumber()) + ' ')
+                f.write(str(improper.improperType()) + ' ')
+                f.write(str(improper.improperAtomOne().atomNumber()) + ' ')
+                f.write(str(improper.improperAtomTwo().atomNumber()) + ' ')
+                f.write(str(improper.improperAtomThree().atomNumber()) + ' ')
+                f.write(str(improper.improperAtomFour().atomNumber()) + ' ')
+                f.write('\n')
       ###
-#        f.write('\n')
-
-    def writeAtomFull(self, f, atom):
-        f.write('atom\n')
 ####'full' atomic style, end
