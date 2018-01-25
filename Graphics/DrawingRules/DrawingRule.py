@@ -13,7 +13,7 @@ class DrawingRule:
                  atomRuleName=None,
                  bondRuleName=None,
                  textRuleName=None):
-        print('dr', generalRuleName)
+        #print('dr', generalRuleName)
         if generalRuleName in ['default', ]:
             self.__generalRuleName = 'default'
             self.__stringsToDraw = set()

@@ -73,7 +73,6 @@ class StructureManipulator:
             angleNumbersToRemove.sort()
             dihedralNumbersToRemove.sort()
             improperNumbersToRemove.sort()
-            print(atomNumbersToRemove)
             for atomNumber in atomNumbersToRemove[::-1]:
                 atoms.pop(atomNumber - 1)
             for bondNumber in bondNumbersToRemove[::-1]:
@@ -84,6 +83,18 @@ class StructureManipulator:
                 dihedrals.pop(dihedralNumber - 1)
             for improperNumber in improperNumbersToRemove[::-1]:
                 impropers.pop(improperNumber - 1)
+            # now we should make proper numeration of atoms, bonds etc.
+            for atomNumber in range(len(atoms)):
+                atoms[atomNumber].setAtomNumber(atomNumber + 1)
+            for bondNumber in range(len(bonds)):
+                bonds[bondNumber].setBondNumber(bondNumber + 1)
+            for angleNumber in range(len(angles)):
+                angles[angleNumber].setAngleNumber(angleNumber + 1)
+            for dihedralNumber in range(len(dihedrals)):
+                dihedrals[dihedralNumber].setDihedralNumber(dihedralNumber + 1)
+            for improperNumber in range(len(impropers)):
+                impropers[improperNumber].setImproperNumber(improperNumber + 1)
+            # writing data
             self.__physicalAtomicSystem = PhysicalAtomicSystem(method='manual',
                                                 fname=None,
                                                 atomicStyle='full',

@@ -20,6 +20,9 @@ class Dihedral:
     def dihedralNumber(self):
         return self.__dihedralNumber
 
+    def setDihedralNumber(self, dihedralNumber):
+        self.__dihedralNumber = dihedralNumber
+
     def dihedralType(self):
         return self.__dihedralType
 

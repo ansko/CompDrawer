@@ -67,6 +67,9 @@ class MainWidget(QWidget):
     def executeTransmittedCommand(self, commandRaw): # will be removed later
         self.__qle.setText(commandRaw)
         self.executeCommand()
+
+    def setDrawnSystem(self, drawnSystem):
+        self.__aw.setDrawnSystem(drawnSystem)
 ######### temporary code, end [2018-01-23/17:03]
 
     def executeCommand(self): # maybe, it is bad that this method is not private?

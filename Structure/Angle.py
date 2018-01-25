@@ -18,6 +18,9 @@ class Angle:
     def angleNumber(self):
         return self.__angleNumber
 
+    def setAngleNumber(self, angleNumber):
+        self.__angleNumber = angleNumber
+
     def angleType(self):
         return self.__angleType
 

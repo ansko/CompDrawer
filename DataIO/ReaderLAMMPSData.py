@@ -187,7 +187,10 @@ class ReaderLAMMPSData:
                        atomFlagTwo = int(ls[8])
                        atomFlagThree = int(ls[9])
                        if len(ls) > 10:
-                           comment = " ".join(*ls[10:-1:1])
+                           if len(ls) == 11:
+                               comment = ls[10]
+                           else:
+                               comment = " ".join(*ls[10:-1:1])
                        else:
                            comment = None
                        atoms[atomNumber - 1] = AtomLAMMPSRealFull(

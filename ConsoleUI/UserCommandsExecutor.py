@@ -3,7 +3,7 @@
 
 
 # my imports
-from AtomicSystem.PhysicalAtomicSystem import PhysicalAtomicSystem
+from Structure.PhysicalAtomicSystem import PhysicalAtomicSystem
 from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
 from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
 from Graphics.DrawingRules.DrawingRule import DrawingRule

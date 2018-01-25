@@ -20,6 +20,9 @@ class Improper:
     def improperNumber(self):
         return self.__improperNumber
 
+    def setImproperNumber(self, improperNumber):
+        self.__improperNumber = improperNumber
+
     def improperType(self):
         return self.__improperType
 

@@ -59,6 +59,9 @@ class Bond:
     def bondNumber(self):
         return self.__bondNumber
 
+    def setBondNumber(self, bondNumber):
+        self.__bondNumber = bondNumber
+
     def bondType(self):
         return self.__bondType
 

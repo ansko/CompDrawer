@@ -18,7 +18,7 @@ class AtomLAMMPSRealFull:
     def __init__(self,
                  atomNumber=1,
                  moleculeNumber=1,
-                 atomType=1,
+                 atomType=1, # forcefield type
                  atomCharge=1,
                  atomX=0,
                  atomY=0,
@@ -45,6 +45,9 @@ class AtomLAMMPSRealFull:
         self.__Vy = atomVy
         self.__Vz = atomVz
         self.__connectedWith = set()
+
+    def setAtomNumber(self, atomNumber):
+       self.__atomNumber = atomNumber
 
     def setAtomX(self, atomX):
         self.__x = atomX

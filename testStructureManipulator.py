@@ -39,7 +39,7 @@ def main():
     # manipulating data
     sm = StructureManipulator()
     sm.setPhysicalAtomicSystem(physicalAtomicSystem)
-    #sm.removeAtom('numbers', [1,])
+    sm.removeAtom('numbers', [1,])
     # writing data
     physicalAtomicSystem = sm.physicalAtomicSystem()
     wld = WriterLAMMPSData(physicalAtomicSystem=physicalAtomicSystem,

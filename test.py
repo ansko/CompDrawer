@@ -39,7 +39,8 @@ def main():
 
     ### tmp code, made to simulate input of some commands, start [2018-01-26/11:35]
     w.executeTransmittedCommand('loadSystemFromFile ' +
-                                'DataExamples/PA6_monomer.data')
+                               # 'DataExamples/PA6_monomer.data')
+                                'datafile.data')
     w.executeTransmittedCommand('setProjection XZ')
     w.executeTransmittedCommand('moveAtomsAlongX 0')
     w.executeTransmittedCommand('moveAtomsAlongY 0')
