@@ -47,11 +47,8 @@ class DrawnSystem:
                # physical system may have atoms of different type
                # (AtomLAMMPSRealFull, AtomPhysical, ...)
                 if atom.atomTypeName() == 'AtomPhysical':
-                    #atom = AtomPhysical(atom)
                     drawnAtom = DrawnAtom(atomPhysical=atom)
                 elif atom.atomTypeName() == 'AtomLAMMPSRealFull':
-                    #print('ds.init alrf', atom.atomX())
-                    #atom = AtomLAMMPSRealFull(atom)
                     drawnAtom = DrawnAtom(atomLAMMPSRealFull=atom)
                 else:
                     print('ERROR, ds.__init__():',
@@ -61,7 +58,7 @@ class DrawnSystem:
             self.__drawnBonds = []
             for physicalBond in physicalSystem.bonds():
                 drawnBond = DrawnBond(physicalBond=physicalBond)
-                self.addDrawnBond(newDrawnBond=DrawnBond(physicalBond=physicalBond))
+                self.addDrawnBond(newDrawnBond=drawnBond)
         else:
             print('ERROR, ds.__init__():'
                   'cannot create DrawnSystem')
@@ -121,16 +118,22 @@ class DrawnSystem:
         self.__setOffsetZ(-z)
 
     def __setOffsetX(self, offsetX):
-        for atom in self.__drawnAtoms:
-            atom.updatePropertyValue(propertyName='offsetX', propertyValue=offsetX)
+        #for atom in self.__drawnAtoms:
+        #    atom.updatePropertyValue(
+        #        propertyName='offsetX', propertyValue=offsetX)
+        self.__setProperties['offsetX'] = offsetX
 
     def __setOffsetY(self, offsetY):
-        for atom in self.__drawnAtoms:
-            atom.updatePropertyValue(propertyName='offsetY', propertyValue=offsetY)
+        #for atom in self.__drawnAtoms:
+        #    atom.updatePropertyValue(
+        #        propertyName='offsetY', propertyValue=offsetY)
+        self.__setProperties['offsetY'] = offsetY
 
     def __setOffsetZ(self, offsetZ):
-        for atom in self.__drawnAtoms:
-            atom.updatePropertyValue(propertyName='offsetZ', propertyValue=offsetZ)
+        #for atom in self.__drawnAtoms:
+        #    atom.updatePropertyValue(
+        #        propertyName='offsetZ', propertyValue=offsetZ)
+        self.__setProperties['offsetZ'] = offsetZ
 
     def addDrawnBond(self, newDrawnBond):
        # Maybe, there should be a checking if atoms that make the bond exist

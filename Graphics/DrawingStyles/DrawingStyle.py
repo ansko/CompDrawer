@@ -19,9 +19,10 @@ class DrawingStyle:
             self.__atomDrawingStyle = 'default'
             self.__bondDrawingStyle = 'default'
             self.__atomPen = QPen()
-            self.__atomBrush = QBrush()
+            self.__atomBrush = QBrush(Qt.black)
+            self.__atomDrawingRadiusUnite = 5
             self.__bondPen = QPen()
-            self.__bondBrush = QBrush()
+            self.__bondBrush = Qt.NoBrush
             self.__bgColor = Qt.black
             self.__textPen = QPen(Qt.black)
             self.__textBrush = None
@@ -34,6 +35,7 @@ class DrawingStyle:
             self.__bondDrawingStyle = 'default'
             self.__atomPen = QPen(Qt.blue)
             self.__atomBrush = QBrush(Qt.blue)
+            self.__atomDrawingRadiusUnite = 15
             self.__bondPen = QPen(Qt.gray)
             self.__bondBrush = QBrush(Qt.gray)
             self.__bgColor = Qt.white
@@ -44,8 +46,8 @@ class DrawingStyle:
             self.__boundariesBrush = None
         elif styleName == 'custom':
             self.__styleName = 'custom'
-            self.__atomDrawingStyle = 'default'
-            self.__bondDrawingStyle = 'default'
+            self.__atomDrawingStyle = 'custom'
+            self.__bondDrawingStyle = 'custom'
             self.__atomPen = Qt.NoPen
             self.__atomBrush = Qt.NoBrush
             self.__bondPen = Qt.NoPen
@@ -56,6 +58,7 @@ class DrawingStyle:
             self.__textLocations = []
             self.__boundariesPen = Qt.NoPen
             self.__boundariesBrush = None
+            self.__atomDrawingRadiusUnite = None
 
     def addLocation(self):
         if len(self.__textLocations) == 0:
@@ -75,29 +78,25 @@ class DrawingStyle:
     def setAtomDrawingStyle(self, atomDrawingStyle):
         self.__atomDrawingStyle = atomDrawingStyle
 
-    def atomBrush(self, atom):
-        if self.__atomDrawingStyle in ['default']:
-            return QBrush(Qt.black)
-        elif self.__atomDrawingStyle in ['custom']:
-            brush = QBrush(Qt.red)
-            return brush
-        elif self.__atomBrush is not None:
+    def atomBrush(self, drawnAtom):
+        if self.__atomBrush is not None:
             return self.__atomBrush
         else:
             return Qt.NoBrush
 
-    def atomPen(self, atom):
-        if self.__atomDrawingStyle in ['default']:
-            return QPen(Qt.black)
-        elif self.__atomDrawingStyle in ['custom']:
-            pen = QPen(Qt.red)
-            return pen
-        elif self.__atomPen is not None:
+    def atomPen(self, drawnAtom):
+        if self.__atomPen is not None:
             return self.__atomPen
         else:
             return Qt.NoPen
 
-    def bondBrush(self):
+    def atomRadius(self, drawnAtom):
+        if self.__atomDrawingStyle in ['default', 'simple']:
+            return self.__atomDrawingRadiusUnite
+        else:
+            return 5
+
+    def bondBrush(self, drawnBond):
         if self.__bondDrawingStyle in ['default']:
             return QBrush(Qt.black)
         elif self.__bondDrawingStyle in ['custom']:
@@ -108,7 +107,7 @@ class DrawingStyle:
         else:
             return Qt.NoBrush
 
-    def bondPen(self):
+    def bondPen(self, drawnBond):
         if self.__bondDrawingStyle in ['default']:
             return QPen(Qt.black)
         elif self.__bondDrawingStyle in ['custom']:

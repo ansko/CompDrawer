@@ -7,7 +7,7 @@ from Structure.PhysicalSystem import PhysicalSystem
 from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
 from Graphics.DrawnSystem import DrawnSystem
 from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
-from Graphics.DrawingRules.DrawingRule import DrawingRule
+
 
 class UserCommandsExecutor:
     """
@@ -34,13 +34,8 @@ class UserCommandsExecutor:
                                         dihedrals=rld.parsedDihedrals(),
                                         impropers=rld.parsedImpropers(),
                                         boundaries=rld.parsedBoundaries())
-        #print('uce.lff()', rld.parsedAtoms()[0].atomX())
         drawnSystem = DrawnSystem(physicalSystem=physicalSystem)
         self.__aw.setPhysicalSystem(physicalSystem=physicalSystem)
-        #self.__aw.setDrawnSystem(drawnSystem=drawnSystem) # no need, because
-                                                           # setPhysicalSystem
-                                                           # automatically calls
-                                                           # setDrawnSystem
 
 ##### methods to manipulate with a displayed picture
     # (not the physical system!)

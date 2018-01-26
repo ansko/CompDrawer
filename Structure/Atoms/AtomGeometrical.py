@@ -10,10 +10,10 @@ class AtomGeometrical:
         self.__x = x
         self.__y = y
         self.__z = z
-        self.__typeName = 'AtomGeometrical'
+        self.__atomTypeName = 'AtomGeometrical'
 
-    def typeName(self):
-        return self.__typeName
+    def atomTypeName(self):
+        return self.__atomTypeName
 
     def x(self):
         return self.__x

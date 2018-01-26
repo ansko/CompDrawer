@@ -12,7 +12,6 @@ from PyQt5.QtCore import *
 
 # my imports
 from Structure.PhysicalSystem import PhysicalSystem
-from Graphics.DrawingRules.DrawingRule import DrawingRule
 from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
 from Graphics.DrawnSystem import DrawnSystem
 from Graphics.MyPainter import MyPainter
@@ -39,7 +38,6 @@ class AtomicWidget(QLabel):
             self.__drawingStyle = DrawingStyle(styleName=None)
         else:
             self.__drawingStyle = DrawingStyle(styleName='default')
-        self.__drawingRule = DrawingRule(generalRuleName=drawingRuleName)
         self.__paintingOffsetX = 0
         self.__paintingOffsetY = 0
         self.__paintingOffsetZ = 0
@@ -59,26 +57,11 @@ class AtomicWidget(QLabel):
         self.__initUI()
 
     def setProjection(self, projection):
-        #print('aw.setProjection', projection)
         if projection in ['XY', 'XZ', 'YZ']:
             self.__projection = projection
-            
-            self.update()
 
     def setDrawingStyle(self, drawingStyle):
         self.__drawingStyle = drawingStyle
-
-    def setDrawingRule(self, drawingRule):
-        self.__drawingRule = drawingRule
-
-    def setAtomDrawingRule(self, atomDrawingRule):
-        self.__drawingRule.setAtomDrawingRule(atomDrawingRule)
-
-    def setBondDrawingRule(self, bondDrawingRule):
-        self.__drawingRule.setBondDrawingRule(bondDrawingRule)
-
-    def setTextDrawingRule(self, textDrawingRule):
-        self.__drawingRule.setTextDrawingRule(textDrawingRule)
 
     def addAtomStringName(self, stringName):
         self.__drawingRule.addAtomStringName(stringName)
@@ -97,62 +80,23 @@ class AtomicWidget(QLabel):
     def drawingStyle(self):
         return self.__drawingStyle
 
-    def __initUI(self):
-        # at the beginning of the loop
-        # values are equal to the first atom coordinates
-        xmin = self.__drawnSystem.atoms()[0].atomX()
-        xmax = self.__drawnSystem.atoms()[0].atomX()
-        ymin = self.__drawnSystem.atoms()[0].atomY()
-        ymax = self.__drawnSystem.atoms()[0].atomY()
-        zmin = self.__drawnSystem.atoms()[0].atomZ()
-        zmax = self.__drawnSystem.atoms()[0].atomZ()
-        # after that we update them
-        for atom in self.__drawnSystem.atoms():
-            x = atom.atomX()
-            y = atom.atomY()
-            z = atom.atomZ()
-            if x < xmin:
-                xmin = x
-            elif x > xmax:
-                xmax = x
-            if y < ymin:
-                ymin = y
-            elif y > ymax:
-                ymax = y
-            if z < zmin:
-                zmin = z
-            elif z > zmax:
-                zmax = z
-        lx = xmax - xmin
-        ly = ymax - ymin
-        lz = zmax - zmin
-        multiplierX = SIZEX / (lx + 2 * R)
-        multiplierY = SIZEY / (ly + 2 * R)
-        multiplierZ = SIZEZ / (lz + 2 * R)
-        self.__scale = min(multiplierX, multiplierY, multiplierZ)
-        centerX = (xmax + xmin) / 2
-        centerY = (ymax + ymin) / 2
-        centerZ = (zmax + zmin) / 2
-        self.__paintingOffsetX = -centerX
-        self.__paintingOffsetY = -centerY
-        self.__paintingOffsetZ = -centerZ
-
     def paintEvent(self, event):
-        sysProp = self.__drawnSystem.getPropertyValue
         self.__drawnSystem.calculateScale()
 
         p = MyPainter()
         p.setDrawnSystem(self.__drawnSystem)
         p.setProjection(self.__projection)
+        p.setScale(self.__drawnSystem.scale())
 
         p.begin(self)
         p.translate(self.width() / 2, self.height() / 2)
 
+        p.drawLegend()
         p.drawAxes()
         for drawnAtom in self.__drawnSystem.drawnAtoms():
             p.drawDrawnAtom(drawnAtom)
         for drawnBond in self.__drawnSystem.drawnBonds():
-            pass
+            p.drawDrawnBond(drawnBond)
 
         p.end()
 
