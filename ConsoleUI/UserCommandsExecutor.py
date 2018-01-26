@@ -3,8 +3,9 @@
 
 
 # my imports
-from Structure.PhysicalAtomicSystem import PhysicalAtomicSystem
+from Structure.PhysicalSystem import PhysicalSystem
 from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
+from Graphics.DrawnSystem import DrawnSystem
 from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
 from Graphics.DrawingRules.DrawingRule import DrawingRule
 
@@ -26,15 +27,20 @@ class UserCommandsExecutor:
     def loadFromFile(self, fname):
         #print('UserCommandExecutor, loading system from file', fname)
         rld = ReaderLAMMPSData(fname=fname, atomicStyle='full')
-        physicalAtomicSystem = PhysicalAtomicSystem(method='manual',
-                                            atoms=rld.parsedAtoms(),
-                                            bonds=rld.parsedBonds(),
-                                            angles=rld.parsedAngles(),
-                                            dihedrals=rld.parsedDihedrals(),
-                                            impropers=rld.parsedImpropers(),
-                                            ranges=rld.parsedRanges())
-        self.__aw.setPhysicalAtomicSystem(
-                                         physicalAtomicSystem=physicalAtomicSystem)
+        physicalSystem = PhysicalSystem(method='manual',
+                                        atoms=rld.parsedAtoms(),
+                                        bonds=rld.parsedBonds(),
+                                        angles=rld.parsedAngles(),
+                                        dihedrals=rld.parsedDihedrals(),
+                                        impropers=rld.parsedImpropers(),
+                                        boundaries=rld.parsedBoundaries())
+        #print('uce.lff()', rld.parsedAtoms()[0].atomX())
+        drawnSystem = DrawnSystem(physicalSystem=physicalSystem)
+        self.__aw.setPhysicalSystem(physicalSystem=physicalSystem)
+        #self.__aw.setDrawnSystem(drawnSystem=drawnSystem) # no need, because
+                                                           # setPhysicalSystem
+                                                           # automatically calls
+                                                           # setDrawnSystem
 
 ##### methods to manipulate with a displayed picture
     # (not the physical system!)
@@ -60,16 +66,33 @@ class UserCommandsExecutor:
 
 ##### methods to manipulate with the physical system
     def moveAtomsAlongX(self, offsetAlongX):
-        #print('UserCommandExecutor, moving atoms along x axis')
-        for atom in self.__aw.physicalAtomicSystem().atoms():
-            atom.mooveAlongXAxis(offsetAlongX)
+        if self.__aw.physicalSystem() is not None:
+            for physicalAtom in self.__aw.physicalSystem().atoms():
+                physicalAtom.mooveAlongXAxis(offsetAlongX)
+        else:
+            print('ERROR, uce.moveAtomsAlongX:',
+                  'physical system is not set',
+                  'it is possible to move just image instead of pruposed action')
+            return
 
     def moveAtomsAlongY(self, offsetAlongY):
         #print('UserCommandExecutor, moving atoms along y axis')
-        for atom in self.__aw.physicalAtomicSystem().atoms():
-            atom.mooveAlongYAxis(offsetAlongY)
+        if self.__aw.physicalSystem() is not None:
+            for physicalAtom in self.__aw.physicalSystem().atoms():
+                physicalAtom.mooveAlongXAxis(offsetAlongY)
+        else:
+            print('ERROR, uce.moveAtomsAlongY:',
+                  'physical system is not set',
+                  'it is possible to move just image instead of pruposed action')
+            return
 
     def moveAtomsAlongZ(self, offsetAlongZ):
         #print('UserCommandExecutor, moving atoms along z axis')
-        for atom in  self.__aw.physicalAtomicSystem().atoms():
-            atom.mooveAlongZAxis(offsetAlongZ)
+        if self.__aw.physicalSystem() is not None:
+            for physicalAtom in self.__aw.physicalSystem().atoms():
+                physicalAtom.mooveAlongXAxis(offsetAlongZ)
+        else:
+            print('ERROR, uce.moveAtomsAlongZ:',
+                  'physical system is not set',
+                  'it is possible to move just image instead of pruposed action')
+            return

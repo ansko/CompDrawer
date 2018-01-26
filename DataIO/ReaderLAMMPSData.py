@@ -312,7 +312,7 @@ class ReaderLAMMPSData:
         self.__parsedAngleTypesNumber = angleTypesNumber
         self.__parsedDihedralTypesNumber = dihedralTypesNumber
         self.__parsedImproperTypesNumber = improperTypesNumber
-        self.__parsedRanges = [xlo, xhi, ylo, yhi, zlo, zhi]
+        self.__parsedBoundaries = [xlo, xhi, ylo, yhi, zlo, zhi]
         self.__parsedMasses = masses
         self.__parsedInclines = inclines
         self.__parsedPairCoeffs = pairCoeffs
@@ -325,8 +325,8 @@ class ReaderLAMMPSData:
     def fname(self):
         return self.__fname
 
-    def parsedRanges(self):
-        return self.__parsedRanges
+    def parsedBoundaries(self):
+        return self.__parsedBoundaries
 
     def parsedPotential(self):
         return self.__parsedPotential

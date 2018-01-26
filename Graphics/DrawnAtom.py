@@ -3,6 +3,7 @@
 
 
 from Structure.Atoms.AtomLAMMPSRealFull import AtomLAMMPSRealFull
+from Structure.Atoms.AtomGeometrical import AtomGeometrical
 
 
 class DrawnAtom:
@@ -12,7 +13,11 @@ class DrawnAtom:
     physical meaning
     """
     def __init__(self,
+                # possible atom types
                  atomLAMMPSRealFull=None,
+                 atomGeometrical=None,
+                 atomPhysical=None,
+                # physical variables
                  atomNumber=None,
                  atomX=None,
                  atomY=None,
@@ -27,12 +32,19 @@ class DrawnAtom:
                  atomFlagOne=None,
                  atomFlagTwo=None,
                  atomFlagThree=None,
+               # drawn variables
+                 atomDrawnRadius=None,
+                 atomOffsetX = None,
+                 atomOffsetY = None,
+                 atomOffsetZ = None,
                  selectionState=None, # atomState = active/passive 
                                       # (is it selected or not)
                  paintingVisibility=None):
         self.__setProperties = dict() # all properties that are already set
                                       # are stored here
-        self.__allProperties = ['atomNumber',
+        """self.__allProperties = ['atomNumber',
+                                'atomLAMMPSRealFull',
+                                'atomGeometrical',
                                 'atomX',
                                 'atomY',
                                 'atomZ',
@@ -48,8 +60,10 @@ class DrawnAtom:
                                 'atomFlagTwo',
                                 'atomFlagThree',
                                 'paintingVisibility']
+        """
         if atomLAMMPSRealFull is not None:
             alrf = atomLAMMPSRealFull
+            #print('da.__init__() alrf', alrf.atomX())
             self.__setProperties['atomX'] = alrf.atomX()
             self.__setProperties['atomY'] = alrf.atomY()
             self.__setProperties['atomZ'] = alrf.atomZ()
@@ -63,6 +77,27 @@ class DrawnAtom:
             self.__setProperties['atomFlagOne'] = alrf.atomFlagOne
             self.__setProperties['atomFlagTwo'] = alrf.atomFlagTwo
             self.__setProperties['atomFlagThree'] = alrf.atomFlagThree
+        elif atomGeometrical is not None:
+            ag = atomGeometrical
+            print('da.__init__()', ag.atomX())
+            self.__setProperties['atomX'] = ag.atomX()
+            self.__setProperties['atomY'] = ag.atomY()
+            self.__setProperties['atomZ'] = ag.atomZ()
+        elif atomPhysical is not None:
+            ap = atomPhysical
+            self.__setProperties['atomX'] = ap.atomX()
+            #print('da.__init__()', ap.atomX())
+            self.__setProperties['atomY'] = ap.atomY()
+            self.__setProperties['atomZ'] = ap.atomZ()
+            self.__setProperties['atomCharge'] = ap.atomCharge()
+            self.__setProperties['atomMass'] = ap.atomMass()
+            self.__setProperties['atomBonds'] = ap.atomBonds()
+            self.__setProperties['atomAngles'] = ap.atomAngles()
+            self.__setProperties['atomDihedrals'] = ap.atomDihedrals()
+            self.__setProperties['atomImpropers'] = ap.atomImpropers()
+        else:
+            print('ERROR, da.__init__():',
+                  'this atom type is not supported')
 
         if atomX is not None:
             self.__setProperties['atomX'] = atomX
@@ -94,6 +129,23 @@ class DrawnAtom:
             self.__setProperties['atomFlagTwo'] = atomFlagTwo
         if atomFlagOne is not None:
             self.__setProperties['atomFlagThree'] = atomFlagThree
+       # careful!
+        if atomDrawnRadius is None:
+            self.__setProperties['drawnRadius'] = 50
+        else:
+            self.__setProperties['drawnRadius'] = atomDrawnRadius
+        if atomOffsetX is None:
+            self.__setProperties['offsetX'] = 0
+        else:
+            self.__setProperties['offsetX'] = atomOffsetX
+        if atomOffsetY is None:
+            self.__setProperties['offsetY'] = 0
+        else:
+            self.__setProperties['offsetY'] = atomOffsetY
+        if atomOffsetZ is None:
+            self.__setProperties['offsetZ'] = 0
+        else:
+            self.__setProperties['offsetZ'] = atomOffsetZ
 
     def setProperties(self):
         return self.__setProperties

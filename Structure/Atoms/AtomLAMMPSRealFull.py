@@ -20,6 +20,7 @@ class AtomLAMMPSRealFull:
                  moleculeNumber=1,
                  atomType=1, # forcefield type
                  atomCharge=1,
+                 atomMass=None, # it may be specified optionally
                  atomX=0,
                  atomY=0,
                  atomZ=0,
@@ -30,10 +31,12 @@ class AtomLAMMPSRealFull:
                  atomVx=0,
                  atomVy=0,
                  atomVz=0):
+        self.__atomTypeName = 'AtomLAMMPSRealFull'
         self.__atomNumber = atomNumber
         self.__moleculeNumber = moleculeNumber
         self.__atomType = atomType
         self.__atomCharge = atomCharge
+        self.__atomMass = atomMass
         self.__x = atomX
         self.__y = atomY
         self.__z = atomZ
@@ -46,8 +49,22 @@ class AtomLAMMPSRealFull:
         self.__Vz = atomVz
         self.__connectedWith = set()
 
+    def atomTypeName(self):
+        return self.__atomTypeName
+
     def setAtomNumber(self, atomNumber):
+       """
+           This function is made for structure manipulations, when atomNumber
+       can change (for example, after deletion or insertion of some atoms).
+       """
        self.__atomNumber = atomNumber
+
+    def setAtomMass(self, atomMass):
+       """
+           Atom Masses in datafile are stored ni a different place than other
+       charactristics, so I suppose this method to be useful.
+       """
+       self.__atomMass = atomMass
 
     def setAtomX(self, atomX):
         self.__x = atomX
@@ -65,6 +82,11 @@ class AtomLAMMPSRealFull:
         self.__y += dy
 
     def mooveAlongZAxis(self, dz):
+        self.__z += dz
+
+    def move(self, dx, dy, dz):
+        self.__x += dx
+        self.__y += dy
         self.__z += dz
 
     def setAtomVx(self, atomVx):
@@ -90,6 +112,9 @@ class AtomLAMMPSRealFull:
 
     def atomCharge(self):
         return self.__atomCharge
+
+    def atomMass(self):
+        return self.__atomMass
 
     def atomX(self):
         return self.__x

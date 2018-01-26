@@ -11,9 +11,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 # my imports
-from Structure.PhysicalAtomicSystem import PhysicalAtomicSystem
+from Structure.PhysicalSystem import PhysicalSystem
 from Graphics.DrawingRules.DrawingRule import DrawingRule
 from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
+from Graphics.DrawnSystem import DrawnSystem
+from Graphics.MyPainter import MyPainter
+
 
 # constants, I should avoid them
 R = 2
@@ -41,21 +44,28 @@ class AtomicWidget(QLabel):
         self.__paintingOffsetY = 0
         self.__paintingOffsetZ = 0
         self.__scale = 1
-        self.__physicalAtomicSystem = None
+        self.__physicalSystem = None
+        self.__drawnSystem = None
         self.__projection = 'XY'
         self.__stringsDrawn = 0
 
-    def setPhysicalAtomicSystem(self, physicalAtomicSystem):
-        self.__physicalAtomicSystem = physicalAtomicSystem
+    def setPhysicalSystem(self, physicalSystem):
+        self.__physicalSystem = physicalSystem
+        drawnSystem = DrawnSystem(physicalSystem=physicalSystem)
+        self.__drawnSystem = drawnSystem
+
+    def setDrawnSystem(self, drawnSystem):
+        self.__drawnSystem = drawnSystem
         self.__initUI()
 
     def setProjection(self, projection):
+        #print('aw.setProjection', projection)
         if projection in ['XY', 'XZ', 'YZ']:
             self.__projection = projection
+            
             self.update()
 
     def setDrawingStyle(self, drawingStyle):
-        #print('aw,', drawingStyle.styleName())
         self.__drawingStyle = drawingStyle
 
     def setDrawingRule(self, drawingRule):
@@ -90,14 +100,14 @@ class AtomicWidget(QLabel):
     def __initUI(self):
         # at the beginning of the loop
         # values are equal to the first atom coordinates
-        xmin = self.__physicalAtomicSystem.atoms()[0].atomX()
-        xmax = self.__physicalAtomicSystem.atoms()[0].atomX()
-        ymin = self.__physicalAtomicSystem.atoms()[0].atomY()
-        ymax = self.__physicalAtomicSystem.atoms()[0].atomY()
-        zmin = self.__physicalAtomicSystem.atoms()[0].atomZ()
-        zmax = self.__physicalAtomicSystem.atoms()[0].atomZ()
+        xmin = self.__drawnSystem.atoms()[0].atomX()
+        xmax = self.__drawnSystem.atoms()[0].atomX()
+        ymin = self.__drawnSystem.atoms()[0].atomY()
+        ymax = self.__drawnSystem.atoms()[0].atomY()
+        zmin = self.__drawnSystem.atoms()[0].atomZ()
+        zmax = self.__drawnSystem.atoms()[0].atomZ()
         # after that we update them
-        for atom in self.__physicalAtomicSystem.atoms():
+        for atom in self.__drawnSystem.atoms():
             x = atom.atomX()
             y = atom.atomY()
             z = atom.atomZ()
@@ -129,114 +139,22 @@ class AtomicWidget(QLabel):
 
     def paintEvent(self, event):
         sysProp = self.__drawnSystem.getPropertyValue
-        p = QPainter()
         self.__drawnSystem.calculateScale()
-        scale = self.__drawnSystem.scale()
-        scalePolicy = self.__drawnSystem.getPropertyValue('scalePolicy')
-        if scalePolicy == 'united':
-            scalex = scale
-            scaley = scale
-            scalez = scale
-        axes = self.__drawnSystem.getPropertyValue('axes')
-       # Draw axes (or not):
-        if sysProp('drawAxesFlag') is not None:
-            p.begin(self)
-            p.translate(self.width() / 2, self.height() / 2)
-            axesPenColorPolicy = sysProp('axesPenColorPolicy')
-            if axesPenColorPolicy == 'united':
-                axesPenColorUnited = sysProp('axesPenColorUnited')
-                pen = QPen(axesPenColorUnited)
-                p.setPen(pen)
-            xlabel = axes[0] # x label means that the label is near the widget's
-                             # x axe, not the system's x axe!
-            ylabel = axes[1] # same for y
-            p.drawLine(0, 0, 100, 0)
-            p.drawLine(0, 0, 0, -100)
-            p.drawText(95, 15, 'X')
-            p.drawText(-10, -95, 'Y')
-            p.end()
-       # Draw atoms (or not):
-        if sysProp('drawAtomsFlag') is not None:
-            p.begin(self)
-            p.translate(self.width() / 2, self.height() / 2)
-            p.scale(1, -1)
-            if 'X' in axes:
-                dx = sysProp('offsetX')
-            if 'Y' in axes:
-                dy = sysProp('offsetY')
-            if 'Z' in axes:
-                dz = sysProp('offsetZ')
-            atomBrushColorPolicy = sysProp('atomBrushColorPolicy')
-            if atomBrushColorPolicy == 'united':
-                atomBrushColorUnited = sysProp('atomBrushColorUnited')
-                brush = QBrush(QColor(atomBrushColorUnited))
-                p.setBrush(brush)
-            elif atomBrushColorPolicy == 'atomType':
-                atomBrushes = sysProp('atomBrushes')
-            for drawnAtom in self.__drawnSystem.drawnAtoms():
-                atProp = drawnAtom.getPropertyValue
-                if atomBrushColorPolicy == 'united':
-                    pass
-                elif atomBrushColorPolicy == 'atomType':
-                    atomType = atProp('atomType')
-                    brush = atomBrushesByType[atomType + 1]
-                    p.setBrush(brush)
-                r = atProp('drawnRadius')
-                if r is None:
-                    r = 50
-                if axes == 'XY':
-                    x = atProp('atomX') + dx
-                    y = atProp('atomY') + dy
-                    p.drawEllipse(x * scalex - r, y * scaley - r, 2 * r, 2 * r)
-                elif axes == 'XZ':
-                    x = atProp('atomX') + dx
-                    z = atProp('atomY') + dz
-                    p.drawEllipse(x * scalex - r, z * scalez - r, 2 * r, 2 * r)
-                elif axes == 'YZ':
-                    y = atProp('atomX') + dy
-                    z = atProp('atomY') + dz
-                    p.drawEllipse(y * scaley - r, z * scalez - r, 2 * r, 2 * r)
-            p.end()
-       # Draw bonds (or not):
-        if sysProp('drawBondsFlag') is not None:
-            p.begin(self)
-            p.translate(self.width() / 2, self.height() / 2)
-            p.scale(1, -1)
-            if 'X' in axes:
-                dx = sysProp('offsetX')
-            if 'Y' in axes:
-                dy = sysProp('offsetY')
-            if 'Z' in axes:
-                dz = sysProp('offsetZ')
-            bondPenColorPolicy = sysProp('bondPenColorPolicy')
-            if bondPenColorPolicy == 'united':
-                bondPenColorUnited = sysProp('bondPenColorUnited')
-                pen = QPen(QColor(bondPenColorUnited))
-                p.setPen(pen)
-            elif bondPenColorPolicy == 'bondType':
-                bondPens = sysProp('bondPens')
-            for i in range(len(self.__drawnSystem.drawnBonds()) - 1):
-                bond = self.__drawnSystem.drawnBonds()[i]
-                boProp = bond.getPropertyValue
-                x1 = boProp('physicalAtomOne').atomX()
-                x2 = boProp('physicalAtomTwo').atomX()
-                y1 = boProp('physicalAtomOne').atomY()
-                y2 = boProp('physicalAtomTwo').atomY()
-                z1 = boProp('physicalAtomOne').atomZ()
-                z2 = boProp('physicalAtomTwo').atomZ()
-                if axes == 'XY':
-                    x1 += dx
-                    x2 += dx
-                    y1 += dy
-                    y2 += dy
-                    p.drawLine(x1 * scalex,
-                               y1 * scaley,
-                               x2 * scalex,
-                               y2 * scaley)
-            p.end()
 
-    def setDrawnSystem(self, drawnSystem):
-        self.__drawnSystem = drawnSystem
+        p = MyPainter()
+        p.setDrawnSystem(self.__drawnSystem)
+        p.setProjection(self.__projection)
+
+        p.begin(self)
+        p.translate(self.width() / 2, self.height() / 2)
+
+        p.drawAxes()
+        for drawnAtom in self.__drawnSystem.drawnAtoms():
+            p.drawDrawnAtom(drawnAtom)
+        for drawnBond in self.__drawnSystem.drawnBonds():
+            pass
+
+        p.end()
 
     def drawnSystem(self):
         return self.__drawnSystem
@@ -248,8 +166,8 @@ class AtomicWidget(QLabel):
         if scale != 0:
             self.__scale = scale
 
-    def physicalAtomicSystem(self):
-        return self.__physicalAtomicSystem
+    def physicalSystem(self):
+        return self.__physicalSystem
 
     def drawingStyle(self):
         return self.__drawingStyle

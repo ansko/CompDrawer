@@ -64,12 +64,6 @@ class DrawingStyle:
             y = self.__textLocations[-1].y() + 10
         self.__textLocations.append(QPointF(0, y))
 
-    ### tmp
-    def printLocations(self):
-        for location in self.__textLocations:
-            print('DS, ', location.x(), location.y())
-    ### tmp
-
     def removeLocation(self):
         if len(self.__textLocations) == 0:
             return
