@@ -2,7 +2,7 @@
 #coding=utf-8
 
 
-from Structure.Atoms.AtomGeometrical import AtomGeometrical
+from Structure.AtomGeometrical import AtomGeometrical
 
 
 class AtomPhysical(AtomGeometrical):

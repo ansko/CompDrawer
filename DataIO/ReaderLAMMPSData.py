@@ -6,8 +6,8 @@
 import sys
 
 # my imports
-from Structure.Atoms.AtomLAMMPSRealFull import AtomLAMMPSRealFull
-from Structure.Bond import Bond
+from Structure.AtomLAMMPS import AtomLAMMPS
+from Structure.BondLAMMPS import BondLAMMPS
 from Structure.Angle import Angle
 from Structure.Dihedral import Dihedral
 from Structure.Improper import Improper
@@ -193,18 +193,19 @@ class ReaderLAMMPSData:
                                comment = " ".join(*ls[10:-1:1])
                        else:
                            comment = None
-                       atoms[atomNumber - 1] = AtomLAMMPSRealFull(
-                                                   atomNumber=atomNumber,
+                       atoms[atomNumber - 1] = AtomLAMMPS(
+                                                   atomNumber,
+                                                   atomX,
+                                                   atomY,
+                                                   atomZ,
                                                    moleculeNumber=moleculeNumber,
                                                    atomType=atomType,
                                                    atomCharge=atomCharge,
-                                                   atomX=atomX,
-                                                   atomY=atomY,
-                                                   atomZ=atomZ,
                                                    atomFlagOne=atomFlagOne,
                                                    atomFlagTwo=atomFlagTwo,
                                                    atomFlagThree=atomFlagThree,
-                                                   atomComment=comment)
+                                                   atomComment=comment
+                                               )
                 elif flagVelocitiesBegan and not flagBondsBegan:
                     ls = line.split()
                     if len(ls) < 4:
@@ -228,15 +229,23 @@ class ReaderLAMMPSData:
                     atomTwoNumber = int(ls[3])
                     atomOne = atoms[atomOneNumber - 1]
                     atomTwo = atoms[atomTwoNumber - 1]
-                    atomOne.addNeighbour(atomTwo)
-                    atomTwo.addNeighbour(atomOne)
-                    bonds[bondNumber - 1] = Bond(bondNumber=bondNumber,
-                                                 bondType=bondType,
-                                                 atomOne=atomOne,
-                                                 atomTwo=atomTwo)
-                    bonds[bondNumber - 1].setBoxRanges([xlo, xhi,
-                                                        ylo, yhi,
-                                                        zlo, zhi])
+                    neighbors = atomOne.getProperty('neighbors')
+                    if neighbors is None:
+                        neighbors = []
+                    neighbors.append(atomTwo)
+                    atomOne.updateProperty('neighbors', neighbors)
+                    neighbors = atomTwo.getProperty('neighbors')
+                    if neighbors is None:
+                        neighbors = []
+                    neighbors.append(atomOne)
+                    atomTwo.updateProperty('neighbors', neighbors)
+                    bonds[bondNumber - 1] = BondLAMMPS(bondNumber,
+                                                       bondType,
+                                                       atomOne,
+                                                       atomTwo)
+                    bonds[bondNumber - 1].setBoxBoundaries([xlo, xhi,
+                                                            ylo, yhi,
+                                                            zlo, zhi])
                 elif flagAnglesBegan and not flagDihedralsBegan:
                     ls = line.split()
                     if len(ls) < 5:

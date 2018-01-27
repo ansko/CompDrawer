@@ -4,7 +4,7 @@
 
 # my imports
 from ConsoleUI.UserCommandsExecutor import UserCommandsExecutor
-from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
+from Graphics.DrawingStyle import DrawingStyle
 
 class ParserUserCommand:
     """
