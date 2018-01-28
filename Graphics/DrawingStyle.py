@@ -20,14 +20,73 @@ class DrawingStyle(Base):
         Base.__init__(self)
         self.__setProperties = dict()
         self.updateProperty('className', 'DrawingStyle')
-        if styleName is None:
-            print('ERROR, DrawingStyle.__init__():',
-                  'styleName is None')
-            return
+        self.__defaultAtomRadius = 50    # To indicate unset value
+        if styleName in [None, 'default']:
+            self.updateProperty('styleName', 'default')
+            self.__atomPen = QPen(Qt.black)
+            self.__atomBrush = QBrush(Qt.black)
+            self.__bondPen = QPen(Qt.black)
+            self.__bondBrush = QBrush(Qt.black)
+            self.__commonAtomRadius = 50
+        elif styleName == 'custom':
+            self.updateProperty('styleName', 'custom')
+            self.__atomPen = Qt.NoPen
+            self.__atomBrush = Qt.NoBrush
+            self.__bondPen = Qt.NoPen
+            self.__bondBrush = Qt.NoBrush
         else:
-            self.updateProperty('styleName', styleName)
-        if styleName == 'custom':
+            print('ERROR, DrawingStyle.__init__():',
+                  'unsupported drawing style',
+                  'specified style name is', styleName)
             return
+
+    def atomPen(self, drawnAtom):
+        if self.getProperty('styleName') in ['default',]:
+            return self.__atomPen
+        elif self.getProperty('styleName') == 'custom':
+            if self.getProperty('atomColorPolicy')  == 'common':
+                self.__atomPen = QPen(self.getProperty('atomColor'))
+                return self.__atomPen
+
+    def atomRadius(self, drawnAtom):
+        if self.getProperty('atomRadiusPolicy') == 'common':
+            if self.getProperty('commonAtomRadius') is not None:
+                return self.getProperty('commonAtomRadius')
+            else:
+                print('ERROR, DrawingStyle.atomRadius():',
+                      'request for the default radius, but it is None')
+                return
+        else:
+            print('ERROR, DrawingStyle.atomRadius:',
+                  'atomRadiusPolicy is not set')
+            return
+        return None
+
+    def atomBrush(self, drawnAtom):
+        if self.getProperty('styleName') in ['default',]:
+            return self.__atomBrush
+        elif self.getProperty('styleName') == 'custom':
+            # Later it will depend on the drawnAtom.
+            if self.getProperty('atomColorPolicy') == 'common':
+                brush = QBrush(self.getProperty('atomColor'))
+                self.__atomBrush = brush
+            return self.__atomBrush
+
+    def bondPen(self, drawnBond):
+        if self.getProperty('styleName') in ['default',]:
+            return self.__bondPen
+        elif self.getProperty('styleName') == 'custom':
+            if self.getProperty('bondColorPolicy')  == 'common':
+                self.__bondPen = QPen(self.getProperty('bondColor'))
+            return self.__bondPen
+
+    def bondBrush(self, drawnBond):
+        if self.getProperty('styleName') in ['default',]:
+            return self.__bondBrush
+        elif self.getProperty('styleName') == 'custom':
+            if self.getProperty('bondColorPolicy')  == 'common':
+                self.__bondBrush = QBrush(self.getProperty('bondColor'))
+            return self.__bondBrush
 
     def addLocation(self):
         if len(self.__textLocations) == 0:

@@ -44,9 +44,10 @@ class MyPainter(QPainter, Base):
         self.drawText(-10, -240, self.__projection[1])
 
     def drawDrawnAtom(self, drawnAtom):
-        r = 5#self.__drawingStyle.atomRadius(drawnAtom)
-        pen = QPen()# self.__drawingStyle.atomPen(drawnAtom)
-        brush = QBrush()#self.__drawingStyle.atomBrush(drawnAtom)
+        drawingStyle = self.getProperty('drawingStyle')
+        r = drawingStyle.atomRadius(drawnAtom)
+        pen = drawingStyle.atomPen(drawnAtom)
+        brush = drawingStyle.atomBrush(drawnAtom)
         self.setPen(pen)
         self.setBrush(brush)
         projection = self.getProperty('projection')
@@ -73,8 +74,9 @@ class MyPainter(QPainter, Base):
                          2 * r, 2 * r)
 
     def drawDrawnBond(self, drawnBond):
-        pen = QPen()# self.__drawingStyle.bondPen(drawnBond)
-        brush = QBrush()# self.__drawingStyle.bondBrush(drawnBond)
+        drawingStyle = self.getProperty('drawingStyle')
+        pen = drawingStyle.bondPen(drawnBond)
+        brush = drawingStyle.bondBrush(drawnBond)
         self.setPen(pen)
         self.setBrush(brush)
         atomOne = drawnBond.getProperty(propertyName='LAMMPSAtomOne')

@@ -31,7 +31,7 @@ class DrawnAtom(Base):
                  atomFlagTwo=None,
                  atomFlagThree=None,
                # drawn variables
-                 atomDrawnRadius=None,
+                 drawnRadius=None,
                  atomOffsetX = None,
                  atomOffsetY = None,
                  atomOffsetZ = None,
@@ -65,47 +65,30 @@ class DrawnAtom(Base):
             if atomProp('atomFlagThree') is not None:
                 self.updateProperty('atomFlagThree', atomProp('atomFlagThree'))
         else:
-            print('ERROR, da.__init__():',
+            print('ERROR, DrawnAtom.__init__():',
                   'this atom type is not supported')
 
         if atomNumber is not None:
-            self.__setProperties['atomNumber'] = atomNumber
+            self.updateProperty('atomNumber', atomNumber)
         if atomMolecule is not None:
-            self.__setProperties['atomMolecule'] = atomMolecule
+            self.updateProperty('atomMolecule', atomMolecule)
         if atomMass is not None:
-            self.__setProperties['atomMass'] = atomMass
+            self.updateProperty('atomMass', atomMass)
         if atomType is not None:
-            self.__setProperties['atomType'] = atomType
+            self.updateProperty('atomType', atomType)
         if atomCharge is not None:
-            self.__setProperties['atomCharge'] = atomCharge
+            self.updateProperty('atomCharge', atomCharge)
         if selectionState is not None:
-            self.__setProperties['selectionState'] = atomState
+            self.updateProperty('selectionState', atomState)
         if atomVx is not None:
-            self.__setProperties['atomVx'] = atomVx
+            self.updateProperty('atomVx', atomVx)
         if atomVy is not None:
-            self.__setProperties['atomVy'] = atomVy
+            self.updateProperty('atomVy', atomVy)
         if atomVz is not None:
-            self.__setProperties['atomVz'] = atomVz
+            self.updateProperty('atomVz', atomVz)
         if atomFlagOne is not None:
-            self.__setProperties['atomFlagOne'] = atomFlagOne
+            self.updateProperty('atomFlagOne', atomFlagOne)
         if atomFlagOne is not None:
-            self.__setProperties['atomFlagTwo'] = atomFlagTwo
+            self.updateProperty('atomFlagTwo', atomFlagTwo)
         if atomFlagOne is not None:
-            self.__setProperties['atomFlagThree'] = atomFlagThree
-      ## Be careful here! I suppose, this might cause errors.
-        if atomDrawnRadius is None:
-            self.__setProperties['drawnRadius'] = 50
-        else:
-            self.__setProperties['drawnRadius'] = atomDrawnRadius
-        if atomOffsetX is None:
-            self.__setProperties['offsetX'] = 0
-        else:
-            self.__setProperties['offsetX'] = atomOffsetX
-        if atomOffsetY is None:
-            self.__setProperties['offsetY'] = 0
-        else:
-            self.__setProperties['offsetY'] = atomOffsetY
-        if atomOffsetZ is None:
-            self.__setProperties['offsetZ'] = 0
-        else:
-            self.__setProperties['offsetZ'] = atomOffsetZ
+            self.updateProperty('atomFlagThree', atomFlagThree)

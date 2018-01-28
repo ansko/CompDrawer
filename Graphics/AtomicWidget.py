@@ -38,16 +38,21 @@ class AtomicWidget(QLabel, Base):
         self.updateProperty('stringsDrawn', 0)
     def updateProperty(self, propertyName, propertyValue):
         if propertyValue is None:
-            print('WARNING, Base.updatePRoperty():',
+            print('WARNING, AtomicWidget.updatePRoperty():',
                   'propertyValue is None')
             return
         Base.updateProperty(self, propertyName, propertyValue)
         if propertyName == 'LAMMPSFullSystem':
             drawnSystem = DrawnSystem(LAMMPSFullSystem = propertyValue)
             Base.updateProperty(self, 'drawnSystem', drawnSystem)
+        elif propertyName == 'drawingStyle':
+            Base.updateProperty(self, propertyName, propertyValue)
 
     def paintEvent(self, event):
         p = MyPainter()
+        drawingStyle = self.getProperty('drawingStyle')
+        if drawingStyle is not None:
+            p.updateProperty('drawingStyle', drawingStyle)
         p.begin(self)
         p.translate(self.width() / 2, self.height() / 2)
         drawnSystem = self.getProperty('drawnSystem')

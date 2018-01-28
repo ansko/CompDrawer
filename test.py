@@ -45,7 +45,11 @@ def main():
     w.executeTransmittedCommand('setProjection XZ')
     w.executeTransmittedCommand('moveAtomsAlongX 0')
     w.executeTransmittedCommand('moveAtomsAlongY 0')
-    #w.executeTransmittedCommand('moveAtomsAlongZ 0') # Why does this not work?!
+    w.executeTransmittedCommand('moveAtomsAlongZ 0')
+    w.executeTransmittedCommand('setDrawingStyle custom')
+    w.executeTransmittedCommand('setAtomColor red')
+    w.executeTransmittedCommand('setAtomRadius 10')
+    w.executeTransmittedCommand('setBondColor green')
 
     w.show()
     sys.exit(app.exec_())

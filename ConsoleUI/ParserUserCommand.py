@@ -2,6 +2,11 @@
 #coding=utf-8
 
 
+# pyqt imports
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+
 # my imports
 from ConsoleUI.UserCommandsExecutor import UserCommandsExecutor
 from Graphics.DrawingStyle import DrawingStyle
@@ -39,6 +44,7 @@ class ParserUserCommand:
             self.__functionArgs.append(['normal termination',])
             sys.exit()
     ##### Commands to manipulate by the system geometry
+        # and, consequently, by the picture, too.
         elif commandName == 'moveAtomsAlongX':
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),',
@@ -63,7 +69,31 @@ class ParserUserCommand:
             offsetAlongZ = float(command[1])
             self.__functionCalls.append(self.__uce.moveAtomsAlongZ)
             self.__functionArgs.append([offsetAlongZ,])
-   ##### Commands to manipulate by the picture
+        elif commandName == 'setAtomColor':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),',
+                      'command is setAtomColor, but the color is not defined')
+                return
+            color = QColor(command[1])
+            self.__functionCalls.append(self.__uce.setAtomColor)
+            self.__functionArgs.append([color,])
+        elif commandName == 'setAtomRadius':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),',
+                      'command is setAtomRadius, but the radius is not defined')
+                return
+            radius = float(command[1])
+            self.__functionCalls.append(self.__uce.setAtomRadius)
+            self.__functionArgs.append([radius,])
+        elif commandName == 'setBondColor':
+            if len(command) < 2:
+                print('ERROR: ParserUserCommand.parseCommand(),',
+                      'command is setBondColor, but the color is not defined')
+                return
+            color = QColor(command[1])
+            self.__functionCalls.append(self.__uce.setBondColor)
+            self.__functionArgs.append([color,])
+   ##### Commands to manipulate just by the picture.
         elif commandName == 'setProjection':
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),'
@@ -82,15 +112,7 @@ class ParserUserCommand:
             drawingStyle = command[1]
             self.__functionCalls.append(self.__uce.setDrawingStyle)
             self.__functionArgs.append([drawingStyle,])
-        elif commandName == 'setDrawingRule':
-            if len(command) < 2:
-                print('ERROR: ParserUserCommand.parseCommand(),'
-                      'command is setDrawingRule,'
-                      'but the rule is not defined')
-                return
-            drawingRule = command[1]
-            self.__functionCalls.append(self.__uce.setDrawingRule)
-            self.__functionArgs.append([drawingRule,])
+        ## It is not supported now.
         elif commandName == 'removeTextStringName':
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),'
@@ -126,7 +148,7 @@ class ParserUserCommand:
             return
         if len(self.__functionCalls) != len(self.__functionArgs):
             print('ParserUserCommand.parseCommand():',
-                  'lengths of commands and args for them differ')
+                  'lengths of commands and args for them differ.')
             return
 
     def functionCalls(self):

@@ -65,4 +65,4 @@ class AtomLAMMPS(Base):
     def moveAlongZAxis(self, dz):
         z = self.getProperty('atomZ')
         z += dz
-        self.updateProperty('atomX', z)
+        self.updateProperty('atomZ', z)

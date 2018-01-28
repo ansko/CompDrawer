@@ -2,6 +2,11 @@
 #coding=utf-8
 
 
+# pyqt imports
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+
 # my imports
 from Structure.LAMMPSFullSystem import LAMMPSFullSystem
 from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
@@ -46,12 +51,9 @@ class UserCommandsExecutor:
 
     def setDrawingStyle(self, drawingStyleName):
         drawingStyle = DrawingStyle(drawingStyleName)
-        self.__aw.setDrawingStyle(drawingStyle)
+        self.__aw.updateProperty('drawingStyle', drawingStyle)
 
-    def setDrawingRule(self, drawingRuleName):
-        drawingRule = DrawingRule(drawingRuleName)
-        self.__aw.setDrawingRule(drawingRule)
-
+    """
     def removeTextStringName(self, stringName):
         self.__aw.removeTextStringName(stringName)
 
@@ -60,6 +62,22 @@ class UserCommandsExecutor:
 
     def addTextStringName(self, stringName):
         self.__aw.addTextStringName(stringName)
+    """
+
+    def setAtomColor(self, color):
+        drawingStyle = self.__aw.getProperty('drawingStyle')
+        drawingStyle.updateProperty('atomColor', color)
+        drawingStyle.updateProperty('atomColorPolicy', 'common')
+
+    def setAtomRadius(self, radius):
+        drawingStyle = self.__aw.getProperty('drawingStyle')
+        drawingStyle.updateProperty('commonAtomRadius', radius)
+        drawingStyle.updateProperty('atomRadiusPolicy', 'common')
+
+    def setBondColor(self, color):
+        drawingStyle = self.__aw.getProperty('drawingStyle')
+        drawingStyle.updateProperty('bondColor', color)
+        drawingStyle.updateProperty('bondColorPolicy', 'common')
 
 ##### methods to manipulate with the physical system
     def moveAtomsAlongX(self, offsetAlongX):
@@ -73,7 +91,6 @@ class UserCommandsExecutor:
                   'it is possible to move just image instead of pruposed action')
             return
         drawnSystem = DrawnSystem(LAMMPSFullSystem=system)
-        self.__aw.updateProperty('drawnSystem', drawnSystem)
         self.__aw.updateProperty('LAMMPSFullSystem', system)
 
     def moveAtomsAlongY(self, offsetAlongY):
@@ -87,7 +104,6 @@ class UserCommandsExecutor:
                   'it is possible to move just image instead of pruposed action')
             return
         drawnSystem = DrawnSystem(LAMMPSFullSystem=system)
-        self.__aw.updateProperty('drawnSystem', drawnSystem)
         self.__aw.updateProperty('LAMMPSFullSystem', system)
 
     def moveAtomsAlongZ(self, offsetAlongZ):
@@ -101,5 +117,4 @@ class UserCommandsExecutor:
                   'it is possible to move just image instead of pruposed action')
             return
         drawnSystem = DrawnSystem(LAMMPSFullSystem=system)
-        self.__aw.updateProperty('drawnSystem', drawnSystem)
         self.__aw.updateProperty('LAMMPSFullSystem', system)
