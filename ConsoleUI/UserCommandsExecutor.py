@@ -2,11 +2,17 @@
 #coding=utf-8
 
 
+# pyqt imports
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+
 # my imports
-from Structure.PhysicalAtomicSystem import PhysicalAtomicSystem
+from Structure.LAMMPSFullSystem import LAMMPSFullSystem
 from DataIO.ReaderLAMMPSData import ReaderLAMMPSData
-from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
-from Graphics.DrawingRules.DrawingRule import DrawingRule
+from Structure.DrawnSystem import DrawnSystem
+from Graphics.DrawingStyle import DrawingStyle
+
 
 class UserCommandsExecutor:
     """
@@ -26,29 +32,28 @@ class UserCommandsExecutor:
     def loadFromFile(self, fname):
         #print('UserCommandExecutor, loading system from file', fname)
         rld = ReaderLAMMPSData(fname=fname, atomicStyle='full')
-        physicalAtomicSystem = PhysicalAtomicSystem(method='manual',
-                                            atoms=rld.parsedAtoms(),
-                                            bonds=rld.parsedBonds(),
-                                            angles=rld.parsedAngles(),
-                                            dihedrals=rld.parsedDihedrals(),
-                                            impropers=rld.parsedImpropers(),
-                                            ranges=rld.parsedRanges())
-        self.__aw.setPhysicalAtomicSystem(
-                                         physicalAtomicSystem=physicalAtomicSystem)
+        lmpFullSystem = LAMMPSFullSystem(method='manual',
+                                         atoms=rld.parsedAtoms(),
+                                         bonds=rld.parsedBonds(),
+                                         angles=rld.parsedAngles(),
+                                         dihedrals=rld.parsedDihedrals(),
+                                         impropers=rld.parsedImpropers(),
+                                         boundaries=rld.parsedBoundaries())
+        drawnSystem = DrawnSystem(LAMMPSFullSystem=lmpFullSystem)
+        self.__aw.updateProperty('LAMMPSFullSystem', lmpFullSystem)
+        self.__aw.updateProperty('drawnSystem', drawnSystem)
+        self.__aw.update()
 
 ##### methods to manipulate with a displayed picture
     # (not the physical system!)
     def setProjection(self, projection):
-        self.__aw.setProjection(projection)
+        self.__aw.updateProperty('projection', projection)
 
     def setDrawingStyle(self, drawingStyleName):
         drawingStyle = DrawingStyle(drawingStyleName)
-        self.__aw.setDrawingStyle(drawingStyle)
+        self.__aw.updateProperty('drawingStyle', drawingStyle)
 
-    def setDrawingRule(self, drawingRuleName):
-        drawingRule = DrawingRule(drawingRuleName)
-        self.__aw.setDrawingRule(drawingRule)
-
+    """
     def removeTextStringName(self, stringName):
         self.__aw.removeTextStringName(stringName)
 
@@ -57,19 +62,59 @@ class UserCommandsExecutor:
 
     def addTextStringName(self, stringName):
         self.__aw.addTextStringName(stringName)
+    """
+
+    def setAtomColor(self, color):
+        drawingStyle = self.__aw.getProperty('drawingStyle')
+        drawingStyle.updateProperty('atomColor', color)
+        drawingStyle.updateProperty('atomColorPolicy', 'common')
+
+    def setAtomRadius(self, radius):
+        drawingStyle = self.__aw.getProperty('drawingStyle')
+        drawingStyle.updateProperty('commonAtomRadius', radius)
+        drawingStyle.updateProperty('atomRadiusPolicy', 'common')
+
+    def setBondColor(self, color):
+        drawingStyle = self.__aw.getProperty('drawingStyle')
+        drawingStyle.updateProperty('bondColor', color)
+        drawingStyle.updateProperty('bondColorPolicy', 'common')
 
 ##### methods to manipulate with the physical system
     def moveAtomsAlongX(self, offsetAlongX):
-        #print('UserCommandExecutor, moving atoms along x axis')
-        for atom in self.__aw.physicalAtomicSystem().atoms():
-            atom.mooveAlongXAxis(offsetAlongX)
+        system = self.__aw.getProperty('LAMMPSFullSystem')
+        if system is not None:
+            for lmpAtom in system.getProperty('atoms'):
+                lmpAtom.moveAlongXAxis(offsetAlongX)
+        else:
+            print('ERROR, uce.moveAtomsAlongX:',
+                  'physical system is not set',
+                  'it is possible to move just image instead of pruposed action')
+            return
+        drawnSystem = DrawnSystem(LAMMPSFullSystem=system)
+        self.__aw.updateProperty('LAMMPSFullSystem', system)
 
     def moveAtomsAlongY(self, offsetAlongY):
-        #print('UserCommandExecutor, moving atoms along y axis')
-        for atom in self.__aw.physicalAtomicSystem().atoms():
-            atom.mooveAlongYAxis(offsetAlongY)
+        system = self.__aw.getProperty('LAMMPSFullSystem')
+        if system is not None:
+            for lmpAtom in system.getProperty('atoms'):
+                lmpAtom.moveAlongYAxis(offsetAlongY)
+        else:
+            print('ERROR, uce.moveAtomsAlongY:',
+                  'physical system is not set',
+                  'it is possible to move just image instead of pruposed action')
+            return
+        drawnSystem = DrawnSystem(LAMMPSFullSystem=system)
+        self.__aw.updateProperty('LAMMPSFullSystem', system)
 
     def moveAtomsAlongZ(self, offsetAlongZ):
-        #print('UserCommandExecutor, moving atoms along z axis')
-        for atom in  self.__aw.physicalAtomicSystem().atoms():
-            atom.mooveAlongZAxis(offsetAlongZ)
+        system = self.__aw.getProperty('LAMMPSFullSystem')
+        if system is not None:
+            for lmpAtom in system.getProperty('atoms'):
+                lmpAtom.moveAlongZAxis(offsetAlongZ)
+        else:
+            print('ERROR, uce.moveAtomsAlongZ:',
+                  'physical system is not set',
+                  'it is possible to move just image instead of pruposed action')
+            return
+        drawnSystem = DrawnSystem(LAMMPSFullSystem=system)
+        self.__aw.updateProperty('LAMMPSFullSystem', system)

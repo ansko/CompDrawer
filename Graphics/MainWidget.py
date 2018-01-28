@@ -4,31 +4,27 @@
 
 # pyqt imports
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+#from PyQt5.QtGui import *
+#from PyQt5.QtCore import *
 
 # my imports
+from Base import Base
 from ConsoleUI.ParserUserCommand import ParserUserCommand
-from Graphics.DrawingStyles.DrawingStyle import DrawingStyle
-from Graphics.Widgets.AtomicWidget import AtomicWidget
-from Graphics.Widgets.ConsoleWidget import ConsoleWidget
+from Graphics.AtomicWidget import AtomicWidget
+from Graphics.ConsoleWidget import ConsoleWidget
 
 
-class MainWidget(QWidget):
-    """
-        UI widget
-    """
+class MainWidget(QWidget, Base):
     def __init__(self):
-        super().__init__()
-        self.__commandsHistory = []
-        self.__historyOffset = 0
-        self.__drawingStyle = DrawingStyle()
+        QWidget.__init__(self)
+        Base.__init__(self)
+        self.__setProperties = dict()
+        self.updateProperty('className', 'MainWidget')
+        self.updateProperty('commandHistory', [])
+        self.updateProperty('historyOffset', 0)
         self.__initUI()
 
-    def setFname(self, fname):
-        self.__fname = fname
 
-    # manipulation with history
     def commandsHistory(self):
         if self.__historyOffset == 0:
             result = self.__commandsHistory
@@ -40,41 +36,45 @@ class MainWidget(QWidget):
         return result
 
     def increaseHistoryOffset(self):
-        if -self.__historyOffset < len(self.__commandsHistory):
-            self.__historyOffset -= 1
+        offset = self.getProperty('historyOffset')
+        if -offset < len(self.__commandsHistory):
+            self.setProperty('historyOffset', offset - 1)
 
     def decreaseHistoryOffset(self):
-        if -self.__historyOffset > 0:
-            self.__historyOffset += 1
+        offset = self.getProperty('historyOffset')
+        if -offset > 0:
+            self.setProperty('historyOffset', offset + 1)
 
-    def setDrawingStyle(self, drawingStyle):
-        self.__aw.setDrawingStyle(drawingStyle)
-
-    def setDrawingRule(self, drawingRule):
-        self.__aw.setDrawingRule(drawingRule)
 
     def __initUI(self):
         self.setFixedSize(500, 600)
-        self.__vbl = QVBoxLayout(self)
+        vbl = QVBoxLayout(self)
         self.__aw = AtomicWidget()
         self.__qle = ConsoleWidget()
         self.__qle.addParent(self)
-        self.__vbl.addWidget(self.__aw)
-        self.__vbl.addWidget(self.__qle)
-        self.setLayout(self.__vbl)
+        vbl.addWidget(self.__aw)
+        vbl.addWidget(self.__qle)
+        self.setLayout(vbl)
+
 
 ######### temporary code, start [2018-01-23/17:03]
-    def executeTransmittedCommand(self, commandRaw): # will be removed later
+    # Should be removed later, because it is dangerous.
+    def executeTransmittedCommand(self, commandRaw):
         self.__qle.setText(commandRaw)
         self.executeCommand()
-
-    def setDrawnSystem(self, drawnSystem):
-        self.__aw.setDrawnSystem(drawnSystem)
 ######### temporary code, end [2018-01-23/17:03]
 
-    def executeCommand(self): # maybe, it is bad that this method is not private?
+
+    def executeCommand(self):
+    # Maybe, it is bad that this method is not private?
+        history = self.getProperty('commandHistiry')
+        # If this is the first command during program run,
+        # there is no history set.
+        if history is None:
+            history = []
         commandRaw = self.__qle.text()
-        self.__commandsHistory.append(commandRaw)
+        history.append(commandRaw)
+        self.setProperty('commandsHistory', history)
         print('MainWidget.executeCommand(), executing:', commandRaw)
         puc = ParserUserCommand(self.__aw, self)
         puc.parseCommand(commandRaw=commandRaw)
@@ -83,6 +83,5 @@ class MainWidget(QWidget):
         self.__qle.setText('')
         for i, command in enumerate(commands):
             arg = args[i]
-            #print('ARG:', arg)
             command(*arg)
         self.update()
