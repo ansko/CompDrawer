@@ -33,7 +33,7 @@ class ParserUserCommand:
             if len(command) < 2:
                 print('ERROR: ParserUserCommand.parseCommand(),'
                       'command is loadSystemFromFile',
-                      'but the fname is not specified')
+                      'but the fname is not specified.')
                 return
             fname = command[1]
             self.__functionCalls.append(self.__uce.loadFromFile)
@@ -43,6 +43,14 @@ class ParserUserCommand:
             self.__functionCalls.append(self.__uce.exit)
             self.__functionArgs.append(['normal termination',])
             sys.exit()
+        elif commandName == 'select':
+            if len(command) < 4:
+                print('ERROR: ParserUserCommand.parseCommand(),'
+                      'command is select',
+                      'but there are too few arguments for it.')
+                return
+            self.__functionCalls.append(self.__uce.select)
+            self.__functionArgs.append(command[1:])
     ##### Commands to manipulate by the system geometry
         # and, consequently, by the picture, too.
         elif commandName == 'moveAtomsAlongX':
@@ -156,3 +164,30 @@ class ParserUserCommand:
 
     def functionArgs(self):
         return self.__functionArgs
+
+    def parseDiapasonInt(self, diapason):
+        """ Returns ints! """
+        result = []
+        subDiapasons = diapason.split(',')
+        for subDiapason in subDiapasons:
+            while subDiapason.startswith(' '):
+                subDiapason = subDiapason[1:]
+            while subDiapason.endswith(' '):
+                subDiapason = subDiapason[:-1]
+            if subDiapason.startswith('['):
+                subDiapason = subDiapason[1:]
+            if subDiapason.endswith(']'):
+                subDiapason = subDiapason[:-1]
+            print(subDiapason)
+            if len(subDiapason.split(':')) > 1:
+                start = int(subDiapason.split(':')[0])
+                end = int(subDiapason.split(':')[1])
+                if len(subDiapason.split(':')) > 2:
+                    step = int(subDiapason.split(':')[2])
+                else:
+                    step = 1
+                for i in range(start, end)[::step]:
+                    result.append(i)
+            else:
+                result.append(int(subDiapason))
+        return result

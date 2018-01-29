@@ -44,6 +44,10 @@ class UserCommandsExecutor:
         self.__aw.updateProperty('drawnSystem', drawnSystem)
         self.__aw.update()
 
+    def select(self, *kwargs):
+        for arg in kwargs:
+            print(arg)
+
 ##### methods to manipulate with a displayed picture
     # (not the physical system!)
     def setProjection(self, projection):

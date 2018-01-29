@@ -50,6 +50,7 @@ def main():
     w.executeTransmittedCommand('setAtomColor red')
     w.executeTransmittedCommand('setAtomRadius 10')
     w.executeTransmittedCommand('setBondColor green')
+    w.executeTransmittedCommand('select atoms id 1, 2, 3')
 
     w.show()
     sys.exit(app.exec_())
